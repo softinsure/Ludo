@@ -1,0 +1,405 @@
+<mx:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  layout="vertical"
+		  width="100%"
+		  minWidth="400"
+		  height="100%"
+		  minHeight="200"
+		  title="Upload Files"
+		  creationComplete="initCom()">
+
+	<fx:Metadata>
+		[Event(name="uploadComplete", type="flash.events.Event")]
+		[Event(name="uploadProgress", type="flash.events.ProgressEvent")]
+		[Event(name="uploadCancel", type="flash.events.Event")]
+		[Event(name="uploadIOError", type="flash.events.IOErrorEvent")]
+		[Event(name="uploadSecurityError", type="flash.events.SecurityErrorEvent")]
+	</fx:Metadata>
+
+	<fx:Script>
+		<![CDATA[
+			import org.frest.utils.FrUtils;
+			import org.ludo.connectors.ImageConnector;
+			import org.ludo.models.Document;
+			import org.ludo.controllers.EventNames;
+			import org.ludo.models.Document;
+			import mx.controls.*;
+			import mx.managers.*;
+			import mx.events.*;
+			//import flash.events.*;
+			//import flash.net.*;
+
+			private var refAddFiles:FileReferenceList;
+			private var refUploadFile:FileReference;
+			private var numCurrentUpload:Number=0;
+			private var pendingFiles:Array;
+			public static var LOAd_COMPLETE:String="loadComplete";
+
+			//image factory
+			//private var imageFactory:ImageConnector=ImageConnector.getInstance();
+			[Bindable]
+			private var addfile:Class;
+			[Bindable]
+			private var getfile:Class;
+			[Bindable]
+			private var putfile:Class;
+			[Bindable]
+			private var deletefile:Class;
+			[Bindable]
+			private var cancelfile:Class;
+			[Bindable]
+			private var gofile:Class;
+
+			// Initalize
+			private function initCom():void
+			{
+				//set images
+				setIcon();
+				pendingFiles=new Array();
+				enableUI();
+				uploadCheck();
+			}
+
+			// Called to add file(s) for upload
+			private function addFiles():void
+			{
+				refAddFiles=new FileReferenceList();
+				refAddFiles.addEventListener(Event.SELECT, onSelectFile);
+				refAddFiles.browse();
+			}
+
+			private function addPendingFile(file:FileReference):void
+			{
+				trace("addPendingFile: name=" + file.name);
+				pendingFiles.push({name: file.name, size: formatFileSize(file.size), file: file});
+			}
+
+			/*
+			   private function removePendingFile(file:FileReference):void {
+			   for (var i:uint; i < pendingFiles.length; i++) {
+			   if (pendingFiles[i].name == file.name) {
+			   pendingFiles.splice(i,1);
+			   if (pendingFiles.length == 0) {
+			   doOnComplete();
+			   }
+			   return;
+			   }
+			   }
+			   }
+			 */
+			private function onSelectFile(event:Event):void
+			{
+				trace("selectHandler: " + refAddFiles.fileList.length + " files");
+				var foundFiles:Array=new Array();
+				var file:FileReference;
+				for (var i:int=0; i < pendingFiles.length; i++)
+				{
+					for (var j:int=0; j < refAddFiles.fileList.length; j++)
+					{
+						if (pendingFiles[i].name == refAddFiles.fileList[j].name)
+						{
+							foundFiles.push(refAddFiles.fileList[j].name);
+							refAddFiles.fileList.splice(j, 1);
+							j--;
+						}
+					}
+				}
+				for (var k:int=0; k < refAddFiles.fileList.length; k++)
+				{
+					file=FileReference(refAddFiles.fileList[k]);
+					addPendingFile(file);
+				}
+				listFiles.dataProvider=pendingFiles;
+				listFiles.selectedIndex=pendingFiles.length - 1;
+				if (foundFiles.length >= 1)
+				{
+					Alert.show("The file(s): \n\n• " + foundFiles.join("\n• ") + "\n\n...are already on the upload list. Please change the filename(s) or pick a different file.", "File(s) already on list");
+				}
+				updateProgBar();
+				scrollFiles();
+				uploadCheck();
+			}
+
+			// Called to format number to file size
+			private function formatFileSize(numSize:Number):String
+			{
+				var strReturn:String;
+				numSize=Number(numSize / 1000);
+				strReturn=String(numSize.toFixed(1) + " KB");
+				if (numSize > 1000)
+				{
+					numSize=numSize / 1000;
+					strReturn=String(numSize.toFixed(1) + " MB");
+					if (numSize > 1000)
+					{
+						numSize=numSize / 1000;
+						strReturn=String(numSize.toFixed(1) + " GB");
+					}
+				}
+				return strReturn;
+			}
+
+			// Called to remove selected file(s) for upload
+			private function removeFiles():void
+			{
+				var arrSelected:Array=listFiles.selectedIndices;
+				if (arrSelected.length >= 1)
+				{
+					for (var i:int=0; i < arrSelected.length; i++)
+					{
+						pendingFiles[int(arrSelected[i])]=null;
+					}
+					for (var j:Number=0; j < pendingFiles.length; j++)
+					{
+						if (pendingFiles[j] == null)
+						{
+							pendingFiles.splice(j, 1);
+							j--;
+						}
+					}
+					listFiles.dataProvider=pendingFiles;
+					listFiles.selectedIndex=0;
+				}
+				updateProgBar();
+				scrollFiles();
+				uploadCheck();
+			}
+
+			// Called to check if there is at least one file to upload
+			private function uploadCheck():void
+			{
+				if (pendingFiles.length == 0)
+				{
+					btnUpload.enabled=false;
+					listFiles.verticalScrollPolicy="off";
+				}
+				else
+				{
+					btnUpload.enabled=true;
+					listFiles.verticalScrollPolicy="on";
+				}
+			}
+
+			// Disable UI control
+			private function disableUI():void
+			{
+				btnAdd.enabled=false;
+				btnRemove.enabled=false;
+				btnUpload.enabled=false;
+				btnCancel.enabled=true;
+				listFiles.enabled=false;
+				listFiles.verticalScrollPolicy="off";
+			}
+
+			// Enable UI control
+			private function enableUI():void
+			{
+				btnAdd.enabled=true;
+				btnRemove.enabled=true;
+				btnUpload.enabled=true;
+				btnCancel.enabled=false;
+				listFiles.enabled=true;
+				listFiles.verticalScrollPolicy="on";
+			}
+
+			private function setIcon():void
+			{
+				addfile=ImageConnector.getImageByName("addfile");
+				getfile=ImageConnector.getImageByName("getfile");
+				putfile=ImageConnector.getImageByName("putfile");
+				cancelfile=ImageConnector.getImageByName("cancelfile");
+				deletefile=ImageConnector.getImageByName("deletefile");
+				gofile=ImageConnector.getImageByName("gofile");
+			}
+
+			// Scroll listFiles to selected row
+			private function scrollFiles():void
+			{
+				listFiles.verticalScrollPosition=listFiles.selectedIndex;
+				listFiles.validateNow();
+			}
+
+			// Called to upload file based on current upload number
+			private function startUpload():void
+			{
+				if (pendingFiles.length > 0)
+				{
+					disableUI();
+
+					listFiles.selectedIndex=numCurrentUpload;
+					scrollFiles();
+					refUploadFile=new FileReference();
+					refUploadFile=listFiles.selectedItem.file;
+					refUploadFile.addEventListener(ProgressEvent.PROGRESS, onUploadProgress);
+					refUploadFile.addEventListener(Event.COMPLETE, loadFileToDB);
+					refUploadFile.addEventListener(IOErrorEvent.IO_ERROR, onUploadIoError);
+					refUploadFile.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onUploadSecurityError);
+					refUploadFile.load();
+				}
+			}
+
+			private function loadFileToDB(event:Event):void
+			{
+				var file:FileReference=FileReference(event.target);
+				var doc:Document=new Document();
+				doc.filename=file.name;
+				doc.quote_id=23;
+				doc.document_data=file.data;
+				FrUtils.cairngormDispatchEvent(EventNames.CREATE_DOCUMENT, [doc, onUploadComplete]);
+			}
+
+			// Cancel and clear eventlisteners on last upload
+			private function clearUpload():void
+			{
+				refUploadFile.removeEventListener(ProgressEvent.PROGRESS, onUploadProgress);
+				refUploadFile.removeEventListener(Event.COMPLETE, loadFileToDB);
+				refUploadFile.removeEventListener(IOErrorEvent.IO_ERROR, onUploadIoError);
+				refUploadFile.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onUploadSecurityError);
+				refUploadFile.cancel();
+				numCurrentUpload=0;
+				updateProgBar();
+				enableUI();
+			}
+
+			// Called on upload cancel
+			private function onUploadCanceled():void
+			{
+				clearUpload();
+				dispatchEvent(new Event("uploadCancel"));
+			}
+
+			// Get upload progress
+			private function onUploadProgress(event:ProgressEvent):void
+			{
+				var numPerc:Number=Math.round((event.bytesLoaded / event.bytesTotal) * 100);
+				updateProgBar(numPerc);
+				var evt:ProgressEvent=new ProgressEvent("uploadProgress", false, false, event.bytesLoaded, event.bytesTotal);
+				dispatchEvent(evt);
+			}
+
+			// Update progBar
+			private function updateProgBar(numPerc:Number=0):void
+			{
+				var strLabel:String=(numCurrentUpload + 1) + "/" + pendingFiles.length;
+				strLabel=(numCurrentUpload + 1 <= pendingFiles.length && numPerc > 0 && numPerc < 100) ? numPerc + "% - " + strLabel : strLabel;
+				strLabel=(numCurrentUpload + 1 == pendingFiles.length && numPerc == 100) ? "Upload Complete - " + strLabel : strLabel;
+				strLabel=(pendingFiles.length == 0) ? "" : strLabel;
+				progBar.label=strLabel;
+				progBar.setProgress(numPerc, 100);
+				progBar.validateNow();
+			}
+
+			// Called on upload complete
+			private function onUploadComplete():void
+			{
+				numCurrentUpload++;
+				if (numCurrentUpload < pendingFiles.length)
+				{
+					startUpload();
+				}
+				else
+				{
+					enableUI();
+					clearUpload();
+					dispatchEvent(new Event("uploadComplete"));
+				}
+			}
+
+			// Called on upload io error
+			private function onUploadIoError(event:IOErrorEvent):void
+			{
+				clearUpload();
+				var evt:IOErrorEvent=new IOErrorEvent("uploadIoError", false, false, event.text);
+				dispatchEvent(evt);
+			}
+
+			// Called on upload security error
+			private function onUploadSecurityError(event:SecurityErrorEvent):void
+			{
+				clearUpload();
+				var evt:SecurityErrorEvent=new SecurityErrorEvent("uploadSecurityError", false, false, event.text);
+				dispatchEvent(evt);
+			}
+
+			// Change view state
+			private function changeView():void
+			{
+				//currentState = (currentState == "mini") ? "" : "mini";
+			}
+		]]>
+	</fx:Script>
+	<!--
+		 <mx:states>
+		 <mx:State name="mini">
+		 <mx:SetProperty name="height" value="60"/>
+		 <mx:SetProperty name="minHeight" value="60"/>
+		 <mx:SetStyle target="{btnView}" name="icon" value="{putfile}"/>
+		 </mx:State>
+		 </mx:states>
+	-->
+	<mx:transitions>
+		<mx:Transition fromState="*"
+					   toState="*">
+			<mx:Resize target="{this}"
+					   duration="1000"/>
+		</mx:Transition>
+	</mx:transitions>
+
+	<mx:Canvas width="100%"
+			   height="100%">
+		<mx:DataGrid id="listFiles"
+					 left="0"
+					 top="0"
+					 bottom="0"
+					 right="0"
+					 allowMultipleSelection="true"
+					 verticalScrollPolicy="on"
+					 draggableColumns="false"
+					 resizableColumns="false"
+					 sortableColumns="false">
+			<mx:columns>
+				<mx:DataGridColumn headerText="File"
+								   dataField="name"
+								   wordWrap="true"/>
+				<mx:DataGridColumn headerText="Size"
+								   dataField="size"
+								   width="75"
+								   textAlign="right"/>
+			</mx:columns>
+		</mx:DataGrid>
+	</mx:Canvas>
+	<mx:ControlBar horizontalAlign="center"
+				   verticalAlign="middle">
+		<mx:Button id="btnAdd"
+				   toolTip="Add file(s)"
+				   click="addFiles()"
+				   icon="{addfile}"
+				   width="26"/>
+		<mx:Button id="btnRemove"
+				   toolTip="Remove file(s)"
+				   click="removeFiles()"
+				   icon="{deletefile}"
+				   width="26"/>
+		<mx:ProgressBar id="progBar"
+						mode="manual"
+						label=""
+						labelPlacement="center"
+						width="100%"/>
+		<mx:Button id="btnCancel"
+				   toolTip="Cancel upload"
+				   icon="{cancelfile}"
+				   width="26"
+				   click="onUploadCanceled()"/>
+		<mx:Button label="Upload"
+				   toolTip="Upload file(s)"
+				   id="btnUpload"
+				   click="startUpload()"
+				   icon="{gofile}"/>
+		<mx:Button id="btnView"
+				   toolTip="Show/Hide file(s)"
+				   icon="{getfile}"
+				   width="26"
+				   click="changeView()"/>
+	</mx:ControlBar>
+</mx:Panel>

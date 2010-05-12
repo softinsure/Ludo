@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sparkcom:SparkPanelBox
+	xmlns:sparkcom="org.ludo.sparks.components.base.*"
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+    title="Debug Console" width="100%" height="100%"
+    creationComplete="init();"
+>
+<fx:Script>
+<![CDATA[
+		import org.ludo.utils.LudoUtils;
+	
+    import mx.collections.ArrayCollection;
+    import org.ludo.controllers.DebugController;
+
+    [Bindable]
+    private var _messages:ArrayCollection;
+	private function init():void
+	{
+		LudoUtils.navController.debugPanel=this;
+	}
+    public function addMessage(msg:String):void {
+        if (_messages == null) {
+            _messages = new ArrayCollection();
+        }
+        _messages.addItem(msg);
+        updateMessages();
+    }
+
+    private function clearMessages():void
+    {
+    	if(_messages !=null)
+    	{
+       	 	_messages.source.splice(0);
+    	}
+       	debugTA.text="";
+    }
+    private function showAcord():void {
+       debugTA.text =LudoUtils.modelController.quote.xmlstore.xmlstring.toXMLString();
+    }
+    private function updateMessages():void {
+        //(This is somewhat inefficient since we're processing
+        //the entire Array every time.)
+      	if(_messages !=null)
+    	{
+       	 	debugTA.text = _messages.source.join("\n");
+    	}
+    }
+]]>
+</fx:Script>
+    <s:TextArea id="debugTA" width="100%" height="100%"/>
+    <s:Button label="Acord" click="showAcord()"/>
+    <s:Button label="clear" click="clearMessages()"/>
+</sparkcom:SparkPanelBox>

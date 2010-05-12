@@ -1,0 +1,97 @@
+<mx:Panel 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	creationComplete="init()" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	width="100%"
+	>
+	<fx:Script>
+		<![CDATA[
+			import mx.core.Container;
+			import mx.core.UIComponent;
+			//	import mx.core.IVisualElement;
+			private var _changed:Boolean=false;
+			private var _open:Boolean=true;
+			override public function set visible(value:Boolean):void
+			{
+				_open=value;
+				if(value==this.visible) return;
+				_changed=true;
+				/*
+				if(this.parent!=null)
+				{
+				_index=this.parent.getChildIndex(this);
+				_parent=this.parent as IVisualElementContainer;
+				_followingSibling=this.parent.getChildAt(_index-1) as IVisualElement;
+				}
+				if(_parent!=null)
+				{
+				if(!value)
+				{
+				if(this.parent.contains(this))
+				{
+				_parent.removeElementAt(_index);
+				}
+				_detached=true;
+				}
+				else
+				{
+				if(_detached)
+				{
+				//attach
+				if(_followingSibling !=null)
+				{
+				_index=_parent.getElementIndex(_followingSibling);
+				_index=_index>1?_index+1:_index;
+				_parent.addElementAt(this,_index);
+				}
+				else
+				{
+				_parent.addElementAt(this,1);
+				}
+				_detached=false;
+				}
+				}
+				}
+				*/
+				//resetHeight();
+				setVisible(value);
+			}
+			// the height that the component should be when visible
+			private function get openHeight():Number
+			{
+				
+				return measuredHeight;
+			}
+			public function resetHeight():void
+			{
+				this.height=!this._open?closedHeight:openHeight;
+			}
+			// the height that the component should be when invisible
+			private function get closedHeight():Number
+			{
+				return 0;
+			}
+			public function set addToTitleBar(child:*):void
+			{
+				this.titleBar.addChild(child);
+			}
+			public function set removeFromTitleBar(child:*):void
+			{
+				this.titleBar.removeChild(child);
+			}
+			override protected function updateDisplayList (unscaledWidth:Number, unscaledHeight:Number):void
+			{ 
+				super.updateDisplayList(unscaledWidth,unscaledHeight);
+				if(_changed)
+				{
+					resetHeight();
+					//if (_open) height = openHeight;
+				}
+			}
+			private function init():void
+			{
+			}
+		]]>
+	</fx:Script>
+</mx:Panel>

@@ -1,0 +1,701 @@
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="100%"
+		 xmlns:com="components.custom.*"
+		 creationComplete="init()"
+		 paddingBottom="5"
+		 paddingLeft="5"
+		 paddingRight="5"
+		 paddingTop="5"
+		 gap="1"
+		 xmlns:layouts="org.ludo.layouts.*" 
+		 xmlns:mxml="org.ludo.components.mxml.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.containers.FormItem;
+			import mx.containers.HBox;
+			import mx.controls.Button;
+			import mx.controls.ComboBox;
+			import mx.controls.DateField;
+			import mx.controls.Text;
+			import mx.controls.TextArea;
+			import mx.controls.TextInput;
+			import mx.core.IVisualElement;
+			import mx.events.ItemClickEvent;
+			import mx.utils.StringUtil;
+			
+			import org.ludo.controllers.ErrorController;
+			import org.ludo.models.Search;
+			import org.ludo.utils.Columns;
+			import org.ludo.utils.LudoUtils;
+			import org.ludo.utils.PopUp;
+			
+			import spark.components.DropDownList;
+
+			[Bindable]
+			public var searchdata:ArrayCollection=new ArrayCollection();
+			[Bindable]
+			public var columncollections:Array=[];
+			[Bindable]
+			private var navigation:Boolean=true;;
+
+			[Bindable]
+			public var colWidth:Array=[];
+			[Bindable]
+			public var search:Search=new Search();
+			//private var searchBuilder:SearchBuilder = SearchBuilder.getInstance();
+
+			//private var titleHbox:HBox = new HBox();
+			private var searchByCtls:Array=[];
+			private var orderByCtls:Array=[];
+			private var gridid:String="";
+			private var searchgrid:XMLList;
+			private var limit:String;
+			private var query:String;
+			private var countquery:String;
+			public var gridxmlid:String="basesearch";
+			private var title:String="";
+			private var btnBarBox:HBox;
+			public var moreWhere:String="";
+			public var moreFrom:String="";
+			public var moreSelect:String="";
+			//private var gridGenerated:Boolean=false;
+			//private var panelGenerated:Boolean=false;
+
+			//search panel related
+			private var labelwidth:int=100;
+			[Bindable]
+			private var searchtip:String="You can use below panel on this page to create a very specific search. Just fill in the fields you need for your current search."
+
+			private function init():void
+			{
+				generateSearchPanel();
+				generateHeaderButtons();
+			}
+
+			//private var searchByBox:DataEntryVBox;
+/* 			override protected function createChildren():void
+			{
+				super.createChildren();
+				//generateSearchPanel();
+				//generateHeaderButtons();
+				//rezize width
+			} */
+
+			public function initiateSearch(gridid:String, gridxmlid:String):void
+			{
+				this.gridid=gridid;
+				this.gridxmlid=gridxmlid;
+				initSearchPanel();
+			}
+
+			private function get getColumnCollection():Array
+			{
+				if (searchgrid != null)
+				{
+					return Columns.createGridColumnArray(searchgrid.datagrid.colElement);
+				}
+				else
+				{
+					return [];
+				}
+			}
+
+			public function get hasControlBar():Boolean
+			{
+				if (btnBarBox != null)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+
+			public function get searchTitle():String
+			{
+				return title;
+			}
+
+			public function get controlBarBox():HBox
+			{
+				return btnBarBox;
+			}
+
+			public function resizeControlBarBox(width:int, height:int):void
+			{
+				btnBarBox.width=width;
+				btnBarBox.height=height;
+			}
+
+			private function initSearchPanel():void
+			{
+				try
+				{
+					searchgrid=LudoUtils.dataStore.getFromXmlContainer(gridxmlid).search.(@id == gridid);
+					if(searchgrid)
+					{
+						if(String(searchgrid.@navigation)=="false")
+						{
+							search.keepNavigation=false;
+							navigation=false;
+						}
+						if(String(searchgrid.@width)!="")
+						{
+							this.width=Number(searchgrid.@width);
+						}
+						if(String(searchgrid.@height)!="")
+						{
+							this.height=Number(searchgrid.@height);
+						}
+						search.rowlimit=searchgrid.query.limit;
+						generateQuery();
+						doSearch();
+					}
+					else
+					{
+						ErrorController.showErrorMeassage("Search XML ID '" + gridxmlid + "' is not correct or not loaded! Please check.");
+					}
+				}
+				catch (error:Error)
+				{
+					ErrorController.logError(error, "NULL", "initSearchPanel");
+				}
+			}
+
+			private function generateQuery():void
+			{
+				var where:String=searchgrid.query.where;
+				var searchby:String=searchByString;
+				var select:String=searchgrid.query.select;
+
+				if(moreWhere!="")
+				{
+					where=where != "" ? " and " + moreWhere : moreWhere;
+				}
+
+				if(moreFrom!="")
+				{
+					moreFrom=" " + moreFrom;
+				}
+				if(moreSelect!="")
+				{
+					select=select+","+moreSelect;
+				}
+				if (where != "" && searchby != "")
+				{
+					where=where + " and " + searchby;
+				}
+				else if (searchby != "")
+				{
+					where=searchby;
+				}
+				where=where != "" ? " where " + where : "";
+
+				var order:String=searchgrid.query.orderby;
+				var orderby:String=orderByString;
+				if (order != "" && orderByString != "")
+				{
+					order=order + "," + orderByString;
+				}
+				else if (orderByString != "")
+				{
+					order=orderByString;
+				}
+				order=order != "" ? " order by " + order : "";
+
+				this.query='select ' + select + ' from ' + searchgrid.query.from + moreFrom + where + order;
+				
+				//this.query=this.query.replace("'","''");
+
+				this.countquery='select count(*) from ' + searchgrid.query.from + moreFrom + where;
+				//this.countquery=this.countquery.replace("'","''");	
+			}
+
+			public function doSearch():void
+			{
+				search.query=this.query + ' limit ' + search.currentOffset.toString() + ',' + search.rowlimit;
+				search.countquery=this.countquery;
+				search.search();//(afterSearch);
+				//CairngormUtils.dispatchEvent(EventNames.DO_SEARCH, [search, afterSearch]);
+			}
+
+			public function afterSearch():void
+			{
+			}
+
+			private function get searchByString():String
+			{
+				var searchby:String="";
+				for each (var obj:Object in searchByCtls)
+				{
+					var val:String=LudoUtils.getFieldValue(obj.control);
+					if (val != "" && obj.datafield != "")
+					{
+						if (StringUtil.trim(obj.operator) == "like")
+						{
+							val=val + "%";
+							obj.operator=" like ";
+						}
+						searchby=searchby != "" ? searchby + " and " + obj.datafield + obj.operator + "'" + val + "'" : obj.datafield + obj.operator + "'" + val + "'";
+					}
+				}
+				return searchby;
+			}
+
+			private function get orderByString():String
+			{
+				var orderby:String="";
+				for each (var obj:Object in orderByCtls)
+				{
+					var val:String=LudoUtils.getFieldValue(obj.control);
+					if (val != "" && obj.datafield != "")
+					{
+						orderby=orderby != "" ? orderby + "," + obj.datafield + " " + val : obj.datafield + " " + val;
+					}
+				}
+				return orderby;
+			}
+
+			private function generateHeaderButtons():void
+			{
+				try
+				{
+					if (searchgrid.hasOwnProperty("controlbuttons"))
+					{
+						var controlbuttons:XML=searchgrid.controlbuttons[0];
+						var ctlBar:ControlButtonBar=LudoUtils.getSearchHeaderButtonBar(controlbuttons);
+						if (ctlBar)
+						{
+							btnBarBox=new HBox();
+							//btnBarBox.width=this.titleBar.width;
+							//btnBarBox.height=this.titleBar.height;
+							if (controlbuttons.hasOwnProperty("buttonbarstyle"))
+							{
+								btnBarBox.styleName=controlbuttons.buttonbarstyle;
+							}
+							else
+							{
+								btnBarBox.styleName="controlBox";
+							}
+							//btnBarBox.width=ctlBar.width;
+							//btnBarBox.height=ctlBar.height;
+							btnBarBox.addElement(ctlBar);
+								//this.titleBar.addElement(btnBarBox);
+						}
+					}
+				}
+				catch (error:Error)
+				{
+					ErrorController.logError(error, "NULL", "generateHeaderButtons");
+				}
+				finally
+				{
+					this.invalidateDisplayList();
+				}
+			}
+
+			private function generateSearchPanelButtons():void
+			{
+				try
+				{
+					if (searchgrid.hasOwnProperty("controlbuttons"))
+					{
+						var controlbuttons:XML=searchgrid.controlbuttons[0];
+						var ctlBar:ControlButtonBar=LudoUtils.getControlButtonBar(controlbuttons);
+						if (ctlBar)
+						{
+							btnBarBox=new HBox();
+							//btnBarBox.width=this.titleBar.width;
+							//btnBarBox.height=this.titleBar.height;
+							if (controlbuttons.hasOwnProperty("buttonbarstyle"))
+							{
+								btnBarBox.styleName=controlbuttons.buttonbarstyle;
+							}
+							else
+							{
+								btnBarBox.styleName="controlBox";
+							}
+							//btnBarBox.width=ctlBar.width;
+							//btnBarBox.height=ctlBar.height;
+							btnBarBox.addElement(ctlBar);
+								//this.titleBar.addElement(btnBarBox);
+						}
+					}
+				}
+				catch (error:Error)
+				{
+					ErrorController.logError(error, "NULL", "generateHeaderButtons");
+				}
+				finally
+				{
+					this.invalidateDisplayList();
+				}
+			}
+
+			public function generateSearchPanel():void
+			{
+				//no tip and search panel avaliable for popup
+				//set columns
+				this.columncollections=getColumnCollection;
+				//set title
+				this.title=searchgrid.@title;
+				//clear panel
+				searchByBox.removeAllElements();
+				orderByBox.removeAllElements();
+				searchByCtls=[];
+				orderByCtls=[];
+				/*
+				   if(searchgrid.@type=="finder")
+				   {
+				   //this.searchTip.visible=false;
+				   //this.removeElement(this.searchTip);
+				   //this.searchTip=null;
+				   }
+				   else
+				   {
+				   if(searchgrid.hasOwnProperty("searchtip"))
+				   {
+				   searchtip=searchgrid.searchtip;
+				   }
+				   }
+				 */
+				if (searchgrid.hasOwnProperty("searchtip"))
+				{
+					searchtip=searchgrid.searchtip;
+				}
+
+				if (searchgrid.hasOwnProperty("searchby"))
+				{
+					var x:XMLList=searchgrid.searchby.fieldElement;
+					if (x.length() > 0)
+					{
+						//searchByBox=new DataEntryVBox();
+						for (var j:int=0; j < x.length(); j++)
+						{
+							searchByBox.addElement(AddFormItem(x[j]));
+						}
+					}
+				}
+				else
+				{
+					this.searchByBox.visible=false;
+					this.searchPanel.removeElement(this.searchByBox);
+					this.searchByBox=null;
+				}
+				if (searchgrid.hasOwnProperty("orderby"))
+				{
+					var y:XMLList=searchgrid.orderby.fieldElement;
+					if (y.length() > 0)
+					{
+						//searchByBox=new DataEntryVBox();
+						for (var i:int=0; i < y.length(); i++)
+						{
+							orderByBox.addElement(AddOrderBy(y[i]));
+						}
+					}
+				}
+				else
+				{
+					this.orderByBox.visible=false;
+					this.searchPanel.removeElement(this.orderByBox);
+					this.orderByBox=null;
+						//orderByBox.visible=false;
+				}
+				if(this.orderByBox == null && this.searchByBox == null)
+				{
+//					this.searchPanel.visible=false;
+					this.removeElement(this.searchPanel);
+					this.removeElement(this.searchTip);
+					this.removeElement(this.buttonBox);
+					this.searchPanel=null;
+					this.searchTip=null;
+					this.buttonBox=null;
+//					this.height=measuredHeight;
+				}
+			}
+			private function AddLabel(displaybject:FormItem, pLabel:String, style:String="", width:int=0):void
+			{
+				if (pLabel.length > 0)
+				{
+					var aLabel:Text=new Text();
+					aLabel.text=pLabel;
+					if (width > 0)
+					{
+						aLabel.width=width;
+					}
+					else
+					{
+						aLabel.width=labelwidth;
+					}
+					displaybject.addElement(aLabel);
+					if (style != "")
+					{
+						aLabel.styleName=style;
+					}
+					else
+					{
+						aLabel.styleName="label";
+					}
+				}
+			}
+
+			private function optionArrayFormSource(lookupsource:String):ArrayCollection
+			{
+				return LudoUtils.lookupSource.optionArray(lookupsource);
+			}
+
+			private function AddFormItem(fieldElement:XML):IVisualElement
+			{
+				var datafield:String=String(fieldElement.@datafield);
+				var fieldType:String=fieldElement.@type;
+				var frmItem:FormItem=new FormItem();
+				frmItem.direction="horizontal";
+				//first return
+				switch (fieldType.toLowerCase())
+				{
+					case 'textinput':
+					case 'datefield':
+					case 'textarea':
+					case 'combobox':
+					case 'dropdownlist':
+					case 'radiolist':
+						AddLabel(frmItem, fieldElement.@label, fieldElement.@labelstyle);
+						AddLabel(frmItem, fieldElement.@operator, fieldElement.@labelstyle, 30);
+						break;
+					case 'display':
+						if (String(fieldElement.@labelstyle) != "")
+						{
+							AddLabel(frmItem, fieldElement.@label, fieldElement.@labelstyle);
+						}
+						else
+						{
+							AddLabel(frmItem, fieldElement.@label, "displayLabel");
+						}
+						break;
+					default:
+						break;
+				}
+				var validation:String=String(fieldElement.@validation);
+				var displayobject:DisplayObject;
+				var defaultval:String=fieldElement.@defaultvalue;
+				switch (fieldType.toLowerCase())
+				{
+					//case 'button':
+					//return frmItem.addElement(Common.CreateDataGridColumnButton(fieldElement));
+					//break;
+					case 'datefield':
+						var dateField:DateField=new DateField();
+						dateField.text=fieldElement.@defaultvalue;
+						displayobject=dateField;
+						frmItem.addElement(dateField);
+						break;
+					case 'textinput':
+						var aTextInput:TextInput=new TextInput();
+						aTextInput.text=fieldElement.@defaultvalue;
+						displayobject=aTextInput;
+						if (fieldType.toLowerCase() == 'textinput')
+						{
+							frmItem.addElement(aTextInput);
+						}
+						break;
+					case 'textarea':
+						var aTextArea:TextArea=new TextArea();
+						aTextArea.text=fieldElement.@defaultvalue;
+						displayobject=aTextArea;
+						frmItem.addElement(aTextArea);
+						break;
+					case 'combobox':
+						var aComboBox:ComboBox=new ComboBox();
+						aComboBox.dataProvider=optionArrayFormSource(fieldElement.@lookupsource);
+						aComboBox.selectedItem=fieldElement.@defaultvalue;
+						displayobject=aComboBox;
+						frmItem.addElement(aComboBox);
+						break;
+					case 'droplodownlist':
+						var aList:DropDownList=new DropDownList();
+						aList.dataProvider=optionArrayFormSource(fieldElement.@lookupsource);
+						aList.selectedItem=fieldElement.@defaultvalue;
+						displayobject=aList;
+						frmItem.addElement(aList);
+						break;
+					case 'radiolist':
+						var aRadioList:CRadioList=new CRadioList();
+						aRadioList.dataProvider=optionArrayFormSource(fieldElement.@lookupsource);
+						aRadioList.setValidation=validation;
+						validation="";
+						aRadioList.selectedValue=fieldElement.@defaultvalue;
+						displayobject=aRadioList;
+						frmItem.addElement(aRadioList);
+						break;
+					default:
+						break;
+				}
+				if (displayobject != null)
+				{
+					addToSearhByCtls(datafield, displayobject, String(fieldElement.@operator));
+					/*
+					   if(fieldID.length>0)
+					   {
+					   searchByCtls[fieldid]=new Object(id=
+					   addElmentByID(fieldID,[displayobject,datafield]);
+					   }
+					 */
+				}
+				if (String(fieldElement.@requiredflag) == "true")
+				{
+					frmItem.required=true;
+				}
+				if (String(fieldElement.@properties) != "")
+				{
+					LudoUtils.setFieldProperties(displayobject, fieldElement.@properties);
+				}
+				return frmItem;
+			}
+
+			private function addToSearhByCtls(datafield:String, ctl:DisplayObject, operator:String=""):void
+			{
+				if (operator == "")
+				{
+					operator="=";
+				}
+				var obj:Object={};
+				obj.datafield=datafield;
+				obj.operator=operator.toLowerCase();
+				obj.control=ctl;
+				searchByCtls.push(obj);
+			}
+
+			private function addToOrderByCtls(datafield:String, ctl:DisplayObject):void
+			{
+				var obj:Object={};
+				obj.datafield=datafield;
+				obj.control=ctl;
+				orderByCtls.push(obj);
+			}
+
+			private function get OptionOrdeyBy():ArrayCollection
+			{
+				var optCol:ArrayCollection=new ArrayCollection();
+				var obj:Object=new Object();
+				obj.label="Asc";
+				obj.data="";
+				optCol.addItem(obj);
+				var obj2:Object=new Object();
+				obj2.label="Desc";
+				obj2.data="desc";
+				optCol.addItem(obj2);
+				return optCol;
+			}
+
+			private function AddOrderBy(fieldElement:XML):IVisualElement
+			{
+				var datafield:String=String(fieldElement.@datafield);
+				var frmItem:FormItem=new FormItem();
+				frmItem.direction="horizontal";
+				AddLabel(frmItem, fieldElement.@label, fieldElement.@labelstyle);
+				var aRadioList:CRadioList=new CRadioList();
+				aRadioList.dataProvider=OptionOrdeyBy;
+				aRadioList.selectedValue="";
+				frmItem.addElement(aRadioList);
+				addToOrderByCtls(datafield, aRadioList);
+				if (String(fieldElement.@properties) != "")
+				{
+					LudoUtils.setFieldProperties(aRadioList, fieldElement.@properties);
+				}
+				return frmItem;
+			}
+
+			private function navigatePage(event:ItemClickEvent):void
+			{
+				if (search.currentpage != event.item.data)
+				{
+					search.resetNavVariables(event);
+					doSearch();
+				}
+			}
+
+			public function newSearch():void
+			{
+				generateQuery();
+				doSearch();
+			}
+
+			private function get childWidth():Number
+			{
+				return this.width - 10;
+			}
+
+			public function resizeWidthFromParent(paddingLeft:Number, paddingRight:Number):void
+			{
+				this.width=this.parent.width - paddingLeft - paddingRight;
+			}
+
+			private function resetPanel():void
+			{
+				for each (var obj:Object in searchByCtls)
+				{
+					LudoUtils.setFieldValue(obj.control, "");
+				}
+				for each (var obj2:Object in orderByCtls)
+				{
+					LudoUtils.setFieldValue(obj2.control, "");
+				}
+				search.resetSearchVariables();
+				newSearch();
+			}
+		]]>
+	</fx:Script>
+	<mxml:CDataGrid 
+		id="datagrid"
+		rowCount="{search.rows.length()}"
+		dataProvider="{search.rows}"
+		columns="{columncollections}"
+		styleName="searchGrid">
+	</mxml:CDataGrid>
+	<s:HGroup width="100%">
+		<s:Label id="pageinfo"
+				  text="{search.pageinfo}"/>
+		<s:Label id="totalinfo"
+				  text="{search.totalinfo}"/>
+	</s:HGroup>
+	<s:Line id="navigationTop" visible="{navigation}"  width="100%"/>
+	<s:HGroup id="navigationBox"  visible="{navigation}"  width="100%">
+		<mx:LinkBar id="pageNav"
+					itemClick="navigatePage(event)"
+					dataProvider="{search.navigation}"
+					horizontalGap="1"
+					width="100%"/>
+	</s:HGroup>
+	<layouts:PageTipBox id="searchTip"
+						tip="{searchtip}"/>
+	<s:HGroup styleName="searchButtonBox"
+			 id="buttonBox">
+		<s:Button styleName="searchButton"
+				   label="New Search"
+				   click="newSearch()"
+				   width="100"/>
+		<s:Button styleName="searchButton"
+				   label="Reset Search"
+				   click="resetPanel()"
+				   width="100"/>
+	</s:HGroup>
+	<s:HGroup styleName="searchPanelBox"
+			 gap="1"
+			 id="searchPanel"
+			 width="100%">
+		<layouts:PanelBox title="Search By"
+						  width="100%"
+						  height="100%"
+						  id="searchByBox">
+		</layouts:PanelBox>
+		<layouts:PanelBox title="Order By"
+						  width="100%"
+						  height="100%"
+						  id="orderByBox">
+		</layouts:PanelBox>
+	</s:HGroup>
+</s:VGroup>

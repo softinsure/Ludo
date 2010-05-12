@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sparkcom:SparkPanelBox
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	height="100%"
+	width="100%"
+	xmlns:sparkcom="org.ludo.sparks.components.base.*"
+	creationComplete="init()"
+	>
+	<fx:Script>
+	<![CDATA[
+		import org.ludo.components.mxml.CSearchBox;
+		private var searchBox:CSearchBox;
+		private var initiated:Boolean=false;
+		private function init():void
+		{
+			this.title=searchBox.searchTitle;
+			if(searchBox.hasControlBar)
+			{
+				//this.controlBarVisible=true;
+				if(this.controlBarContent==null)
+				{
+					this.controlBarContent=[];
+				}
+				//searchBox.resizeControlBarBox(this.controlBarGroup.width,this.controlBarGroup.height);
+				this.controlBarContent.push(searchBox.controlBarBox);
+			}
+			else
+			{
+				//this.controlBarVisible=false;
+			}
+		}
+		public function initiateSearch(gridid:String,gridxmlid:String):void
+		{
+			if(!initiated)
+			{
+				searchBox = new CSearchBox();
+				searchBox.initiateSearch(gridid,gridxmlid);
+				this.addElement(searchBox);
+				initiated=true;
+			}
+			else
+			{
+				//just search
+				searchBox.doSearch();
+			}
+		}
+		]]>
+	</fx:Script>
+</sparkcom:SparkPanelBox>

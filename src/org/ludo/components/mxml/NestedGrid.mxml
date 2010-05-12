@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layouts:PanelBox
+		styleName="nestedBox"
+		xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		width="100%"
+		xmlns:layouts="org.ludo.layouts.*"
+		xmlns:mxml="org.ludo.components.mxml.*">
+	<!--<layouts:labelBox id="header"
+				   width="100%"/>
+	-->
+	<mxml:CDataGrid id="nestedgrid"
+		creationComplete="init()"
+		wordWrap="true"
+		styleName="nestedDisplayGrid"
+		>
+	</mxml:CDataGrid>
+		<fx:Script>
+			<![CDATA[
+				import mx.controls.dataGridClasses.DataGridColumn;
+				import org.ludo.utils.Columns;
+				
+				import org.ludo.utils.XMLMapper;
+				//import mx.controls.dataGridClasses.DataGridColumn;
+				import org.ludo.utils.LudoUtils;
+				import mx.collections.ArrayCollection;
+				import mx.controls.DataGrid;
+				private var gridsource:String="";
+				private var gridsets:XMLList;
+				private var joinpath:String=""; //this path indicates to get value using this xpath from workitem(acord), default to datagrid
+				private var jointoid:String=""; //this must be when joinpath is defined, this will use to get the row from xmllist
+				private var getvalpath:String=""; //will be collected from datagrid, bydefault this is datafield
+				private var datafield:String="";
+
+				private var labelFields:XMLList;
+				private var joinpathHeader:String=""; //this path indicates to get value using this xpath from workitem(acord), default to datagrid
+				private var jointoidHeader:String=""; //this must be when joinpath is defined, this will use to get the row from xmllist
+				private var getvalpathHeader:String=""; //will be collected from datagrid, bydefault this is datafield
+
+				private function setColumnWidth():void
+				{
+					for each (var col:DataGridColumn in nestedgrid.columns)
+					{
+						if (col.width == nestedgrid.minColumnWidth)
+						{
+							col.width=nestedgrid.width;
+						}
+					}
+				}
+
+				public function set setDataField(datafield:String):void
+				{
+					this.datafield=datafield;
+				}
+
+				public function set setGridSet(gridset:String):void
+				{
+					var source:Array=gridset.split("::");
+					if (source.length >= 1)
+					{
+						//get the gridsets
+						//first element is the fieldset id
+						//collect from lookup source
+						this.gridsets=LudoUtils.lookupSource.getGridSets(source[0]);
+						if (source.length >= 2) //you have join path and key
+						{
+							this.joinpath=source[1]; //joinpath
+						}
+						if (source.length >= 3) //you have join path and key
+						{
+							this.jointoid=source[2]; //join key
+						}
+						if (source.length > 3) //you have path to get key value
+						{
+							this.getvalpath=source[3]; //joinpath
+						}
+						//set source
+						gridsource=String(gridsets.@source);
+						if (gridsets.hasOwnProperty("header"))
+						{
+							var sourceHeader:Array=gridsets.header.@fieldset.split("::");
+							if (sourceHeader.length >= 1)
+							{
+								//get the labelFields
+								//first element is the fieldset id
+								//collect from lookup source
+								this.labelFields=LudoUtils.lookupSource.getFieldSets(sourceHeader[0]).children();
+								if (sourceHeader.length >= 3) //you have join path and key
+								{
+									this.joinpathHeader=sourceHeader[1]; //joinpath
+									this.jointoidHeader=sourceHeader[2]; //join key
+								}
+								if (sourceHeader.length > 3) //you have path to get key value
+								{
+									this.getvalpathHeader=sourceHeader[3]; //joinpath
+								}
+							}
+						}
+
+							//if sortable.by default no sort
+
+					}
+					//resizeDatagrid();
+				}
+
+				private function renderGrid():void
+				{
+					if(this.data != null)
+					{
+						var sourceXml:XMLList;
+						if (joinpath == "")
+						{
+							sourceXml=XMLList(data);
+						}
+						else
+						{
+							//get from join path
+							//create a joid condition
+							if (gridsource == "root")
+							{
+								if (this.jointoid != "")
+								{
+									//get the join value
+									var val:String=LudoUtils.getNodeValue(XMLMapper.getNodeByXpathAndRootNode(this.data as XML, getvalpath == "" ? datafield : getvalpath)[0]);
+									//sourceXml=XMLMapper.getNodeByXpathAndRootNode(sourceData.parent(),this.joinpath+"[@"+this.jointoid+"='"+val+"']")[0];
+									sourceXml=LudoUtils.modelController.xmlMapper.getNodeByXpath(this.joinpath + "[@" + this.jointoid + "='" + val + "']");
+								}
+								else
+								{
+									sourceXml=LudoUtils.modelController.xmlMapper.getNodeByXpath(this.joinpath);
+								}
+							}
+							else
+							{
+								if (this.jointoid != "")
+								{
+									//get the join value
+									var val2:String=LudoUtils.getNodeValue(XMLMapper.getNodeByXpathAndRootNode(this.data as XML, getvalpath == "" ? datafield : getvalpath)[0]);
+									//sourceXml=XMLMapper.getNodeByXpathAndRootNode(sourceData.parent(),this.joinpath+"[@"+this.jointoid+"='"+val+"']")[0];
+									sourceXml=XMLMapper.getNodeByXpathAndRootNode(this.data as XML, this.joinpath + "[@" + this.jointoid + "='" + val2 + "']");
+								}
+								else
+								{
+									sourceXml=XMLMapper.getNodeByXpathAndRootNode(this.data as XML, this.joinpath);
+								}
+							}
+						}
+						nestedgrid.datacollection=sourceXml;
+						nestedgrid.columncollections=Columns.createGridColumnArray(gridsets.colElement);
+					}
+				}
+
+				private function renderHeader():void
+				{
+					if (this.data != null)
+					{
+						var label:String="";
+						var sourceXml:XML;
+						if (joinpathHeader == "")
+						{
+							sourceXml=XMLList(data)[0];
+						}
+						else
+						{
+							//get from join path
+							//create a joid condition
+							if (this.jointoidHeader != "")
+							{
+								//get the join value
+								var val:String=LudoUtils.getNodeValue(XMLMapper.getNodeByXpathAndRootNode(data as XML, getvalpathHeader == "" ? datafield : getvalpathHeader)[0]);
+								//sourceXml=XMLMapper.getNodeByXpathAndRootNode(sourceData.parent(),this.joinpath+"[@"+this.jointoid+"='"+val+"']")[0];
+								sourceXml=LudoUtils.modelController.xmlMapper.getNodeByXpath(this.joinpathHeader + "[@" + this.jointoidHeader + "='" + val + "']")[0];
+							}
+							else
+							{
+								throw new Error("Mising filter condition (joinid) in fieldset attribute 'fieldsetid::joinpath::joinid::joinvalue'");
+							}
+						}
+						for each (var field:XML in labelFields)
+						{
+							switch (String(field.@type).toLowerCase())
+							{
+								case 'string':
+									label=label + field.toString();
+									break;
+								case 'space':
+									label=label + " ";
+									break;
+								case 'field':
+									if(sourceXml==null) break;
+									var fieldval:String=XMLMapper.getNodeByXpathAndRootNode(sourceXml, field.toString()).toString();
+									if (String(field.@lookupsource) != "")
+									{
+										fieldval=LudoUtils.lookupSource.getValueFromLookupSource(String(field.@lookupsource), fieldval);
+									}
+									//label=label+XMLMapper.getNodeByXpathAndRootNode(XMLList(data)[0],field.toString()).toString();
+									label=label + fieldval;
+									break;
+								default:
+									label=label + field.toString();
+									break
+							}
+						}
+						this.title=label;
+					}
+				}
+
+				private function init():void
+				{
+					renderGrid();
+					renderHeader();
+					if (nestedgrid.datacollection.length() <= 0)
+					{
+						nestedgrid.visible=false;
+					}
+					else
+					{
+						setColumnWidth();
+					}
+				}
+			]]>
+		</fx:Script>
+</layouts:PanelBox>

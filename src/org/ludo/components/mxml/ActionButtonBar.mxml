@@ -1,0 +1,185 @@
+<s:HGroup 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:layouts="org.ludo.layouts.*" 
+	horizontalAlign="center"
+	verticalAlign="middle"
+	width="100%"
+	creationComplete="init()"
+	>
+	<s:ButtonBar id="dynaBar"
+				  dataProvider="{btnActionList}"
+				  change="onButtonClick(event)"/>
+	<mx:PopUpMenuButton id="moreaction"
+						visible="false"
+						label="More Actions"
+						dataProvider="{btnMoreActionArray}"
+						itemClick="onButtonClick(event)"/>
+
+	<fx:Script>
+		<![CDATA[
+			import flash.utils.getDefinitionByName;
+			
+			import mx.collections.ArrayList;
+			import mx.events.ItemClickEvent;
+			import mx.messaging.management.Attribute;
+			
+			import org.ludo.utils.ClassReference;
+			import org.ludo.utils.LudoUtils;
+			
+			import spark.events.IndexChangeEvent;
+			//private var clsRef:*;
+			//import utils.DebugMessage;
+			[Bindable]
+			private var parentFunction:Function;
+			[Bindable]
+			private var funtionParam:Array;
+			[Bindable]
+			private var btnActionList:ArrayList;
+			//[Bindable]
+			//private var btnActionList:Array=[];
+			//[Bindable]
+			//private var btnMoreAction:Array=[];
+			[Bindable]
+			private var btnMoreActionArray:Array=[];
+			private var pageid:String="";
+
+			public function setBar(data:XML,currentpageid:String):void
+			{
+				if (data != null && data is XML)
+				{
+					pageid=currentpageid;
+					var funcParam:String=String(data.@methodparam);
+					var parentFunc:String=String(data.@method);
+					var paramArray:Array;
+					if (funcParam != "")
+					{
+						funtionParam=funcParam.split(",");
+					}
+					else
+					{
+						funtionParam=[];
+					}
+					if (parentFunc == "")
+					{
+						parentFunc="org.ludo.controllers.ActionController.modelControlBarClicked";
+					}
+					parentFunction=LudoUtils.getFunctionReferenceByFullPath(parentFunc);
+					setAction(LudoUtils.filterByViewMode(data.action,currentpageid));
+					setMoreAction(LudoUtils.filterByViewMode(data.moreaction,currentpageid));
+				}
+			}
+
+			private function init():void
+			{
+				if(btnMoreActionArray.length < 1)
+				{
+					this.removeElement(this.moreaction);
+					//moreaction.visible=true;
+				}
+				else
+				{
+					moreaction.visible=true;
+				}
+			}
+
+			private function onButtonClick(event:*):void
+			{
+				if (parentFunction != null)
+				{
+					if (funtionParam.length > 0)
+					{
+						parentFunction(event, funtionParam);
+					}
+					else
+					{
+						parentFunction(event);
+					}
+				}
+			}
+			private function setAction(xmllist:XMLList):void
+			{
+				for each (var xml:XML in xmllist)
+				{
+					var blnCreate:Boolean=true;
+					var inPage:Array=[];
+					var notInPage:Array=[];
+					if(xml.hasOwnProperty("@inpage"))
+					{
+						inPage=String(xml.@inpage).split(',');
+					}
+					if(xml.hasOwnProperty("@notinpage"))
+					{
+						notInPage=String(xml.@notinpage).split(',');
+					}
+					if(inPage.length>0 && pageid.length>0)
+					{
+						if(inPage.indexOf(pageid)!=-1)
+						{
+							blnCreate=true;
+						}
+						else
+						{
+							blnCreate=false;
+						}
+					}
+					if(blnCreate && notInPage.length>0 && pageid.length>0)
+					{
+						if(notInPage.indexOf(pageid)!=-1)
+						{
+							blnCreate=false;
+						}
+					}
+					if(blnCreate)
+					{
+						if(btnActionList==null)
+						{
+							btnActionList = new ArrayList();
+						}
+						
+						var obj:Object=new Object();
+						for each (var attribute:XML in xml.@*)
+						{
+							obj[attribute.name().toString()]=xml.@[attribute.name()].toString();
+						}
+						btnActionList.addItem(obj);
+					}
+				}
+			}
+
+			private function setMoreAction(xmllist:XMLList):void
+			{
+				for each (var xml:XML in xmllist)
+				{
+					var blnCreate:Boolean=true;
+					var inPage:Array=[];
+					if(xml.hasOwnProperty("@inpage"))
+					{
+						inPage=String(xml.@inpage).split(',');
+					}
+					if(inPage.length>0 && pageid.length>0)
+					{
+						if(inPage.indexOf(pageid)!=-1)
+						{
+							blnCreate=true;
+						}
+						else
+						{
+							blnCreate=false;
+						}
+					}
+					if(blnCreate)
+					{
+						var obj:Object=new Object();
+						for each (var attribute:XML in xml.@*)
+						{
+							obj[attribute.name().toString()]=xml.@[attribute.name()].toString();
+						}
+						btnMoreActionArray.push(obj);
+					}
+				}
+			}
+		]]>
+	</fx:Script>
+</s:HGroup>

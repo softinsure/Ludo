@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fxpProperties abbreviated="false" authoringTool="Flex Builder" parentProject="860248fd-ef6e-4e07-9703-b839cab368cb" projectUUID="c5b15f0d-a64f-47a2-a5c1-099b9138f5a7" sdkVersion="4.0.0" uuid="07ddc1c2-96e7-4b49-b795-26687cc50cf1" version="3">
+  <projects>
+    <project filename="LudoUtils.fxpl" position="2" projectUUID="70592a13-f694-40c2-975b-b489c848adcd" uuid="07ddc1c2-96e7-4b49-b795-26687cc50cf1"/>
+  </projects>
+  <src/>
+  <swc>
+    <linked location="sdkPlaceHolder" path="sdkPlaceHolder" position="0" uuid="07ddc1c2-96e7-4b49-b795-26687cc50cf1"/>
+    <linked location="C:/WorkSpace/DreamProjects/FRest/lib" path="/lib" position="1" uuid="07ddc1c2-96e7-4b49-b795-26687cc50cf1"/>
+  </swc>
+  <misc/>
+  <theme/>
+</fxpProperties>

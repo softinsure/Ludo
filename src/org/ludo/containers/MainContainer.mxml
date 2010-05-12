@@ -1,0 +1,51 @@
+<layouts:VLayout 
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+  	xmlns:s="library://ns.adobe.com/flex/spark"
+  	xmlns:mx="library://ns.adobe.com/flex/mx"
+  	width="100%"
+  	creationComplete="init();"
+  	xmlns:navigators="org.ludo.navigators.*"
+  	xmlns:base="org.ludo.containers.base.*"
+  	xmlns:containers="org.ludo.containers.*"
+  	xmlns:layouts="org.ludo.layouts.*"
+  	>
+	<fx:Script>
+		<![CDATA[
+			import org.ludo.utils.LudoUtils;
+			public function init():void
+			{
+				LudoUtils.containerController.leftNavContainer=this.leftNav;
+				//LudoUtils.containerController.topNavContainer=this.topNav;
+				LudoUtils.containerController.detailContainer=this.activityDetail;
+				LudoUtils.containerController.applicationRight=this.appRight;
+				//LudoUtils.containerController.rightHelpContainer=this.rightHelp;
+				//LudoUtils.containerController.rightTopContainer=this.rightTop;
+				LudoUtils.containerController.loadContainer("default");
+				LudoUtils.containerController.applicationRight=this.appRight;
+			}
+/*
+			public function loadMain():void
+			{
+				LudoUtils.containerController.loadContainer("default");
+			}
+*/
+		]]>
+	</fx:Script>
+	<layouts:ApplicationHeader id="appHeader"/>
+	<!--
+	<s:VGroup horizontalAlign="center" width="100%">
+		<containers1:TopNavigation id="topNav">
+			
+		</containers1:TopNavigation>
+	</s:VGroup>
+	-->
+	<layouts:HLayout styleName="mainDetail" width="100%" height="100%">
+		<containers:LeftNavigation id="leftNav">
+		</containers:LeftNavigation>
+		<containers:ActivityDetail width="100%"
+									height="100%"
+									id="activityDetail"/>
+		<layouts:ApplicationRight id="appRight" width="300">
+		</layouts:ApplicationRight>
+	</layouts:HLayout>
+</layouts:VLayout>

@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layouts:VLayout
+	xmlns:views="views.*" 
+	xmlns:com="components.custom.*" 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" 
+	creationComplete="init()"
+	xmlns:layouts="org.ludo.layouts.*" 
+	xmlns:mxml="org.ludo.components.mxml.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.CloseEvent;
+			
+			import org.common.utils.XStringUtil;
+			import org.ludo.components.custom.CoverageInput;
+			import org.ludo.controllers.ErrorController;
+			import org.ludo.controllers.MessageController;
+			import org.ludo.objects.XmlMap;
+			import org.ludo.utils.CurrentPage;
+			import org.ludo.utils.LudoUtils;
+			import org.ludo.utils.XMLMapper;
+			import org.ludo.utils.XMLUtils;
+			public const VIEWING_UNITGRID:int = 0;
+			public const VIEWING_PANEL:int = 1;
+			
+			
+			import org.ludo.layouts.PanelBox;
+			
+			//[Bindable] public var paneltoadd:DataEntryPanel=new DataEntryPanel();;	
+			[Bindable] public var paneltoadd:PanelBox=new PanelBox();
+			[Bindable] public var unitid:String="";
+			[Bindable] public var emptymessage:String="There are no units entered";
+			
+			private var nounit:Boolean=false;
+			private var newunit:Boolean=false;
+
+			[Bindable]
+			private var readonly:Boolean=false;
+			public var saveunit:Boolean=false;
+			//public var heighttogrow:int;
+			//public var currentunitid:String="";
+			public var firsttimedefaultsets:String="";
+			public var identifier:String="";
+			public var identifierFormat:String="";
+			public var currentFieldMapping:Array;
+			public var currentNode:XML;	
+			public var blankNode:XML;
+			public var coverageCtlArray:Array=[];
+			public var pageid:String=CurrentPage.ID;
+			public var currentIndex:int=0;
+			public var unitMap:String="";
+
+			public function get unitCount():int
+			{
+				if(nounit)
+				{
+					return 0;
+				}
+				else
+				{                                                        
+	         		return datacollection.length();
+	   			}
+	     	}
+			private function get newSeq():int
+			{
+				if(nounit)
+				{
+					return 1;
+				}
+				else
+				{                                                        
+	         		return datacollection.length();
+	   			}
+	     	}
+	     	public function deleteUnit(confirm:Boolean=true):void
+	     	{
+	     		if(confirm)
+	     		{
+					MessageController.confirmYesNo("Are you sure you that want to delete the selected unit?","Confirmation",conformDelete);
+				}
+	     		else
+	     		{
+	     			deleteRow();
+	     		}
+	     	}
+	     	private function conformDelete(event:CloseEvent):void 
+			{
+				if(event.detail == Alert.YES)
+				{
+					deleteRow();
+				}
+/* 				if (event.detail == Alert.YES) {
+					deleteRow();
+				}
+ */			}
+			public function deleteRow():void
+			{
+				//var pageManager:PageController=PageController.getInstance();
+				var cid:String="";
+				if(datacollection.length()<=1)
+				{
+					cid=datacollection[0]["@"+identifier];
+					currentIndex=0;
+					this.datacollection[0]=XMLUtils.generateBlankXmlTemplate(XML(datacollection[0]),"Coverage");
+					nounit=true;
+				}
+				else
+				{
+					currentIndex=unitgrid.selectedIndex;
+					cid=datacollection[currentIndex]["@"+identifier];
+					delete datacollection[unitgrid.selectedIndex];
+					resetAllIdentifier();
+				}
+				showControls=false;
+				showAllCoverage=false;
+				resetGrid();
+				LudoUtils.pageController.pageChanged=true;
+				LudoUtils.pageController.addToChangeDetail(cid,pageid,"D",cid,"","xml","","",unitMap);
+				LudoUtils.pageController.updateQuoteToDB(currentIndex,true);
+			}
+			public function get currentIdetifier():String
+			{
+				return String(datacollection[currentIndex]["@"+identifier]);
+			}
+	     	public function populateEditPanel():void {
+	        	
+				if(paneltoadd!=null)
+				{
+		        	this.currentNode=getNodeToPopulate();  	
+		        	if(currentNode!=null)
+		        	{
+		        		setDefaultValue();
+		        		var _unitaray:Array=LudoUtils.dataStore.getFromUnitXmlMapContainer(pageid+"_"+paneltoadd.id);
+		        		//clear existing currentFieldMapping
+		        		if(_unitaray!=null)
+		        		{
+		        			doCurrentFieldMapping(_unitaray[1],this.currentNode);
+		        		}
+		        		if(!newunit)
+						{
+							//doEdit();
+						}
+					}
+					LudoUtils.pageController.hideActionBar();
+					showControls=true;
+					showAllCoverage=true;
+					this.saveunit=true;
+					//pass the current unit to coverage
+					setCurrentParentNodeOfCoverage();
+					viewPanel=VIEWING_PANEL;
+					//viewstack.selectedIndex=VIEWING_PANEL;
+				}	
+			}
+			private function set showControls(show:Boolean):void
+			{
+				var dataarray:Array=LudoUtils.dataStore.getFromUnitXmlMapContainer(pageid+"_"+paneltoadd.id)[1];
+				if(dataarray!=null)
+				{
+					for(var i:int=0;i<dataarray.length;i++)
+					{
+						var ctlObj:XmlMap = dataarray[i] as XmlMap;
+						if(ctlObj!=null)
+						{
+							if(ctlObj.fieldtype!='hidden')
+							{
+								(ctlObj.displayObject as DisplayObject).visible=show;
+							}
+						}
+					}
+				}
+			}
+			private function doAdd():void
+			{
+				if(paneltoadd!=null)
+				{
+					newunit=true;
+					populateEditPanel();
+				}			
+			}
+			private function doCurrentFieldMapping(dataarray:Array,currentNode:XML):void
+			{
+				var xRootPath:String=currentNode.parent()==null?currentNode.name().toString()+"/":"";
+				this.currentFieldMapping=[];
+				for(var i:int=0;i<dataarray.length;i++)
+				{
+					var mapObject:XmlMap = dataarray[i];
+					if(XmlMap!=null)
+					{
+						var nodeList:XMLList=XMLMapper.getNodeByXpathAndRootNode(currentNode as XML,xRootPath+mapObject.fieldmap);
+						if(nodeList.length()>1)
+						{
+							LudoUtils.keepFirstNodeInXmlList(nodeList);
+						}
+						var node:XML=nodeList[0];
+						//add to array for saving
+						this.currentFieldMapping.push([mapObject,node]);
+						if(mapObject.fieldaction!='save')
+						{
+							LudoUtils.setNodeValueToField(mapObject.displayObject,node);
+						}
+						//check if readfrom when no value
+						//if(LudoUtils.getFieldValue(mapObject.displayObject)=="" && mapObject.defaultvalue!="")
+						if(this.newunit && mapObject.defaultvalue!="")
+						{
+							LudoUtils.setFieldValueToSave(mapObject.displayObject,mapObject.defaultvalue);
+						}
+					}
+				}
+			}
+			private function setDefaultValue():void
+			{
+				if(newunit && firsttimedefaultsets!="")
+				{
+					if(LudoUtils.firstTimeDefault.setDefaultToUnit(firsttimedefaultsets,this.currentNode,unitCount))
+					{
+						LudoUtils.pageController.pageChanged=true;
+						LudoUtils.modelController.quote.xmlstore.changed=true;
+					}
+				}
+			}
+			private function getNodeToPopulate():XML
+			{
+				if(newunit)
+				{
+					if(nounit)
+					{
+						return datacollection[0];
+					}
+					else
+					{
+						return this.blankNode.copy();
+					}
+					currentIndex=datacollection.length();
+				}
+				else
+				{
+					currentIndex=unitgrid.selectedIndex;
+					return datacollection[unitgrid.selectedIndex];
+				}
+			}
+			public function getNodeToSave():XML
+			{
+				if(newunit)
+				{
+					var node:XML;
+					if(nounit)
+					{
+						node=currentNode;
+					}
+					else
+					{
+						node=addNodeToCollection();
+					}
+					setIdentifier();
+					return node;
+				}
+				else
+				{
+					return currentNode;
+				}
+			}
+			public function resetUnit(type:String='default'):void
+			{
+				if(type.toLowerCase()!='cancel')
+				{
+					nounit=false;
+				}
+				newunit=false;
+				this.currentFieldMapping=[];
+				showControls=false;
+				showAllCoverage=false;
+				resetGrid();
+			}
+			private function addNodeToCollection():XML
+			{
+				this.datacollection[this.datacollection.length()]=this.currentNode;
+				return this.currentNode;
+			}
+			private function init():void
+			{
+				try
+				{
+					readonly=LudoUtils.pageController.ifReadOnly(pageid);
+					setBlankUnit();
+					showControls=false;
+					showAllCoverage=false;
+					resetGrid();
+					initCoverageUnits();
+				}
+				catch(e:Error)
+				{
+					ErrorController.logErrorTwo("UnitEditGrid: " + e.toString(),"init","init");
+				}
+				this.unitgrid.horizontalScrollPolicy="off";
+			}
+			private function initCoverageUnits():void
+			{
+				for each (var coverageinput:CoverageInput in coverageCtlArray)
+				{
+					coverageinput.setAllUnits(this.datacollection)
+				}
+			}
+			private function set showAllCoverage(show:Boolean):void
+			{
+				for each (var coverageinput:CoverageInput in coverageCtlArray)
+				{
+					coverageinput.showControls=show;
+				}
+			}
+			private function setCurrentParentNodeOfCoverage():void
+			{
+				for each (var coverageinput2:CoverageInput in coverageCtlArray)
+				{
+					coverageinput2.resetControl(this,newunit);
+				}
+			}
+			public function checkIfCoverageValueChanged():Boolean
+			{
+				var changed:Boolean=false;
+				for each (var coverageinput:CoverageInput in coverageCtlArray)
+				{
+					if(coverageinput.anyValueChanged())
+					{
+						return true;
+					}
+				}
+				return false;
+			}
+			public function doSaveAllCoverages():Boolean
+			{
+				var changed:Boolean=false;
+				for each (var coverageinput:CoverageInput in coverageCtlArray)
+				{
+					if(coverageinput.doSaveCoverageNode())
+					{
+						changed=true;
+					}
+				}
+				return changed;
+			}
+			private function setIdentifier():void
+			{
+				var seq:String="";
+				if(LudoUtils.pageController.changeDetail)
+				{
+					var lastID:String=datacollection[datacollection.length()-1].@[identifier];
+					seq=lastID.replace(this.identifierFormat.replace("#seq#",""),"");
+					if(LudoUtils.isANumber(seq))
+					{
+						seq=(int(seq)+1).toString();
+					}
+					else
+					{
+						seq=newSeq.toString();
+					}
+				}
+				{
+					seq=newSeq.toString();
+				}
+				var attr:String=this.identifierFormat.replace("#seq#",XStringUtil.lpad(seq,3,"0"));
+				if(this.currentNode.@[identifier].toString()=="")
+				{
+					this.currentNode.@[identifier]=attr;
+				}
+			}
+			private function resetAllIdentifier():void
+			{
+				//reset if not endorsement
+				if(LudoUtils.pageController.changeDetail) return;
+				for (var i:int=1; i<=datacollection.length();i++)
+				{
+					var attr:String=this.identifierFormat.replace("#seq#",XStringUtil.lpad(i.toString(),3,"0"));
+					datacollection[i-1].@[identifier]=attr;
+				}
+			}
+			private function setBlankUnit():void
+			{
+				if(datacollection.length()<=1)
+				{
+					if(datacollection.length()==1)
+					{
+						if(datacollection[0].@[identifier].toString()=="")
+						{
+							//no unit added
+							this.blankNode = XML(datacollection[0]).copy();
+							nounit=true;
+						}
+					}
+					this.unitgrid.rowCount=1;	
+				}
+				if(!nounit)
+				{
+					this.blankNode = XMLUtils.generateBlankXmlTemplate(XML(datacollection[0]),"Coverage");
+					if(blankNode.hasOwnProperty("Coverage"))
+					{
+						for each(var coverage:XML in XMLMapper.getNodeByXpathAndRootNode(blankNode,"Coverage"))
+						{
+							XMLMapper.setValueToNode(XMLMapper.getNodeByXpathAndRootNode(coverage,"CurrentTermAmt/Amt")[0],"");
+						}
+					}
+				}
+				else
+				{
+					//doAdd();
+				}
+			}
+			private function emptyMsg():void
+			{
+				emptymsg.visible=nounit;
+			}
+			private function resetGrid():void
+			{
+				emptyMsg();
+				this.saveunit=false;
+				LudoUtils.pageController.showActionBar();
+				resetDataProvider();
+				//this.unitgrid.resizeGrid(this.datacollection.length());
+	   			viewPanel=VIEWING_UNITGRID;
+			}
+			private function resetDataProvider():void
+			{
+				this.unitgrid.dataProvider=nounit?this.datablankcollection:this.datacollection;
+			}
+			private function set viewPanel(viewBox:int):void
+			{
+				//this.removeAllChildren();
+				this.removeAllElements();
+				if(viewBox==0)
+				{
+					this.addElement(ugridpanel);
+				}
+				else
+				{
+					this.addElement(paneltoadd);
+				}
+			}
+	     ]]>
+		</fx:Script>
+		<layouts:VLayout id="ugridpanel">
+		    <mxml:CDataGrid styleName="unitGrid" id="unitgrid" columns="{this.columncollections}">
+	     	<fx:Script>
+			<![CDATA[
+			import mx.controls.Alert;
+			import mx.collections.ArrayCollection;
+			import mx.controls.DataGrid;
+			import mx.controls.dataGridClasses.*;
+	
+			public var datacollection:XMLList;
+			public var datablankcollection:XMLList;
+	
+			[Bindable]
+			public var columncollections:Array=[];
+
+			[Bindable]
+			public var colWidth:Array=[];			
+	     ]]>
+	</fx:Script>
+		</mxml:CDataGrid>
+		<s:Label id="emptymsg" styleName="emptymessage" text="{emptymessage}"/>
+        <layouts:ActionBar id="addBar">
+		<s:Button id="addButton" visible="{!readonly}" label="Click to Add" click="doAdd()"/>
+		</layouts:ActionBar>
+	</layouts:VLayout>
+</layouts:VLayout>

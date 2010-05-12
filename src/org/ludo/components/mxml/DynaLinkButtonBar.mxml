@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:LinkBar horizontalAlign="center"
+			itemClick="onDataGridButtonClick(event,data)"
+			creationComplete="RefreshItem()"
+			initialize="init()"
+			xmlns:fx="http://ns.adobe.com/mxml/2009"
+			xmlns:s="library://ns.adobe.com/flex/spark"
+			xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.LinkButton;
+			import mx.events.ItemClickEvent;
+			
+			import org.ludo.connectors.ImageConnector;
+			import org.ludo.utils.LudoUtils;
+			private var show:Boolean=true;
+			[Bindable]
+			private var parentDataField:String;
+			[Bindable]
+			private var parentFunction:Function;
+			[Bindable]
+			private var functionParam:Array;
+			[Bindable]
+			private var style:String;
+			public var pageid:String;
+			private var iconIndex:Array=[];
+			private function iconToSet():void
+			{
+				for (var idx:int=0; idx < iconIndex.length; idx++)
+				{
+					var iArray:Array=String(iconIndex[idx]).split("::::");
+					if(iArray.length>1)//add icon
+					{
+						attachIcon(iArray[0],iArray[1]);
+					}
+				}
+			}
+			protected function callLaterAttachIcon(idx:int,iconPath:String):void
+			{
+				if(idx<0)
+					return;
+				var aLinkButton:LinkButton=this.getElementAt(idx) as LinkButton;
+				if(aLinkButton!=null)
+				{
+					LudoUtils.setIconToButton(aLinkButton,iconPath);
+				}
+			}
+			private function attachIcon(idx:int,iconPath:String):void
+			{
+				if(idx<0)
+					return;
+				if(this.numElements>idx)
+				{
+					var aLinkButton:LinkButton=this.getElementAt(idx) as LinkButton;
+					if(aLinkButton!=null)
+					{
+						LudoUtils.setIconToButton(aLinkButton,iconPath);
+					}
+					else
+					{
+						this.callLater(this.callLaterAttachIcon, [idx, iconPath]);
+					}
+				}
+			}
+			public function onDataGridButtonClick(event:ItemClickEvent, data:Object):void
+			{
+				if (parentFunction != null)
+				{
+					if (functionParam.length > 0)
+					{
+						parentFunction(event, data, functionParam);
+					}
+					else
+					{
+						parentFunction(event, data);
+					}
+				}
+			}
+
+			private function init():void
+			{
+				setStyleName();
+			}
+
+			private function RefreshItem():void
+			{
+				var data:Object=this.data;
+				if (data is XML && parentDataField != null)
+				{
+					if (data[parentDataField].toString() == "")
+					{
+						show=false;
+					}
+				}
+				callLater(showBar);
+				iconToSet();
+				//this.visible=vis;
+			}
+
+			public function set setBtnArray(param:Array):void
+			{
+				parentDataField=param[0] as String;
+				var idx:int=0;
+				var btnArray:Array=[];
+				var xmllist:XMLList=param[1] as XMLList;
+				var func:String=param[2] as String;
+				if (func != "")
+				{
+					parentFunction=LudoUtils.getFunctionReferenceByFullPath(func);
+				}
+				this.functionParam=param[3] as Array;
+				for each (var xml:XML in xmllist)
+				{
+					var obj:Object=new Object();
+					var view:Boolean=true;
+					for each (var attribute:XML in xml.@*)
+					{
+						//obj[attribute.name().toString()]=xml.@[attribute.name()].toString();
+						view=true;
+						var atrName:String=String(attribute.name());
+						switch (atrName)
+						{
+							case 'permissionfor':
+								view=LudoUtils.pageController.hasPermissionByActivities(String(xml.@permissionfor));
+								break;
+							case 'viewifquotein':
+								view=LudoUtils.pageController.viewMenuIfQuoteIn(String(xml.@viewifquotein));
+								break;
+							case 'iconmap':
+								iconIndex.push(idx+"::::"+String(xml.@iconmap));
+								break;
+							default:
+								obj[attribute.name().toString()]=xml.@[atrName].toString();
+								break;
+						}
+						if(!view)
+						{
+							break;
+						}
+					}
+					if(view)
+					{
+						btnArray.push(obj);
+						idx++;
+					}
+				}
+				style=param[4] as String;
+				this.dataProvider=btnArray;
+			}
+			private function setStyleName():void
+			{
+				if(style != "")
+				{
+					this.styleName=style;
+				}
+			}
+			private function showBar():void
+			{
+				this.visible=show;
+			}
+		]]>
+	</fx:Script>
+</mx:LinkBar>

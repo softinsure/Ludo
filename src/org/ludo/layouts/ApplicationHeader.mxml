@@ -1,0 +1,50 @@
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:containers="org.ludo.containers.*"
+		 width="100%">
+	<fx:Script>
+		<![CDATA[
+			import org.ludo.utils.LudoUtils;
+			import org.ludo.connectors.ImageConnector;
+			[Bindable]
+			//private var desc:String="Agent Quote: The Next generation Quoting Tool!";
+			private var desc:String="";
+			[Bindable]
+			private var imgSource:Class;
+
+			public function set headerDescription(desc:String):void
+			{
+				this.desc=desc;
+			}
+
+			protected override function createChildren():void
+			{
+				super.createChildren();
+				LudoUtils.containerController.topRightNavContainer=this.topRightNav;
+				LudoUtils.containerController.topNavContainer=this.topNav;
+				imgSource=ImageConnector.getImageByName("companylogo");
+			}
+		]]>
+	</fx:Script>
+	<s:Rect width="100%"
+			height="100%">
+		<s:fill>
+			<s:SolidColor color="{getStyle('backgroundColor')}"/>
+		</s:fill>
+	</s:Rect>
+	<s:HGroup width="100%">
+		<mx:Image source="{imgSource}"/>
+		<containers:TopNavigation id="topNav"/>
+		<s:Label styleName="headerDesc"
+				 text="{desc}"
+				 height="100%"
+				 width="100%"/>
+		<containers:TopUserNavigation id="topRightNav"/>
+		<!--
+			 <s:VGroup width="100%" horizontalAlign="right">
+			 <containers:TopUserNavigation id="topRightNav"/>
+			 </s:VGroup>
+		-->
+	</s:HGroup>
+</s:Group>

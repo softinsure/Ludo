@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base:Navigation xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:base="org.ludo.containers.base.*" width="100%">
+	<base:layout>
+		<s:VerticalLayout gap="0">
+		</s:VerticalLayout>
+	</base:layout>
+	<fx:Script>
+		<![CDATA[
+			import org.ludo.utils.LudoUtils;
+			import org.ludo.components.custom.DynaLinkBar;
+			import mx.controls.Alert;
+			import mx.events.ItemClickEvent;
+			public function topBarClicked(event:ItemClickEvent):void
+			{
+				menuClicked=event.target as DynaLinkBar;
+				menuClicked.container=event.item.container;
+				var confirmchange:String=String(event.item.confirmchange);
+				menuClicked.currSelect=event.target.selectedIndex;
+				if (menuClicked.lastSelect == menuClicked.currSelect)
+				{
+					return;
+				}
+				if(menuClicked.confirmchange)
+				{
+					event.target.selectedIndex=menuClicked.lastSelect;
+					if(!LudoUtils.pageController.confirmIfChanged(confirmResponse))
+					{
+						setConfirmChange(confirmchange);
+						changeContainer();
+					}
+				}
+				else
+				{
+					setConfirmChange(confirmchange);
+					changeContainer();
+				}
+			}
+		]]>
+	</fx:Script>
+</base:Navigation>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:DropDownList 
+	typicalItem="{this.selectedItem}"
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			public var valuebeforesave:String="";
+			public function get selectedValue():String
+			{
+				if(dataProvider==null) return "";
+				if(this.dataProvider.length >0 && this.selectedIndex >0)
+				{
+					return String(this.dataProvider[this.selectedIndex]["data"]);
+				}
+				return "";
+			}
+			
+			// set for selectedValue 
+			public function set selectedValue(value:String):void
+			{
+				if(dataProvider!=null)
+				{
+					for (var i:int=0; i < this.dataProvider.length; i++)
+					{
+						// Get this item's data 
+						var item:String=this.dataProvider[i]["data"];
+						
+						// Check if is selectedValue 
+						if (item == value)
+						{
+							// Yes, set selectedIndex 
+							//this.selectedIndex=i;
+							this.selectedItem=dataProvider[i];
+							break;
+						}
+					}
+				}
+				if(this.selectedItem==null)
+				{
+					this.selectedIndex=0;
+				}
+			}
+		]]>
+	</fx:Script>
+</s:DropDownList>

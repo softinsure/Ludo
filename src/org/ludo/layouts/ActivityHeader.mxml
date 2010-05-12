@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	width="100%" >
+<fx:Script>
+	<![CDATA[
+		[Bindable]
+		private var desc:String;
+		public function set headerDescription(desc:String):void
+		{
+			this.desc=desc;
+		}
+	]]>
+</fx:Script>
+	<s:Label text="{desc}" styleName="activityLabel" />
+</s:HGroup>

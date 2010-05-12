@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sparkcom:SparkPanelBox
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+  	xmlns:s="library://ns.adobe.com/flex/spark"
+  	xmlns:mx="library://ns.adobe.com/flex/mx"
+  	width="100%"
+  	xmlns:com="org.ludo.components.mxml.*" 
+  	xmlns:sparkcom="org.ludo.sparks.components.base.*"
+  	title="Set Group Permissions"
+	creationComplete="init()"
+>
+<fx:Script>
+<![CDATA[
+	import mx.events.ItemClickEvent;
+	import mx.events.ListEvent;
+	
+	import org.ludo.utils.LudoUtils;
+
+	private var activityBox:org.ludo.components.mxml.CSearchBox=new org.ludo.components.mxml.CSearchBox();
+	private var initiatedActivity:Boolean=false;
+	private var selectedActivity:String="";
+	private function init():void
+	{
+		this.title=activityBox.searchTitle;
+		if(activityBox.hasControlBar)
+		{
+			//this.controlBarVisible=true;
+			if(this.controlBarContent==null)
+			{
+				this.controlBarContent=[];
+			}
+			//searchBox.resizeControlBarBox(this.controlBarGroup.width,this.controlBarGroup.height);
+			this.controlBarContent.push(activityBox.controlBarBox);
+			//activityBox(this.titleBar.width,this.titleBar.height);
+			//this.titleBar.addChild(activityBox.controlBarBox);
+			//this.controlBarGroup.addElement(activityBox.controlBarBox);
+		}
+	}
+	override protected function createChildren():void
+	{
+		super.createChildren();
+		groupCombo.addEventListener(ListEvent.CHANGE,onselectGroup);
+		LudoUtils.lookupSource.setOptionArray("database::admincombolist::group",groupCombo);
+		lobCombo.addEventListener(ListEvent.CHANGE,onselectLob);
+		LudoUtils.lookupSource.setOptionArray("database::admincombolist::lob",lobCombo);
+		selectActivities();
+	}
+	private function onselectGroup(e:Event):void
+	{
+		selectActivities();
+	}
+	private function onselectLob(e:Event):void
+	{
+		selectActivities();
+	}
+	private function dgActivityClicked(event:ListEvent):void
+	{
+		selectedActivity=event.itemRenderer.data["activity_code"];
+		//selectLOBS();
+	}
+	public function selectActivities():void
+	{
+		activityBox.moreFrom="and p.group_code='"+groupCombo.selectedValue+"' and p.lob_code='"+lobCombo.selectedValue+"'";
+		activityBox.moreSelect="'"+groupCombo.selectedValue+"' selected_group,'"+ lobCombo.selectedValue+"' selected_lob";
+		if(!initiatedActivity)
+		{
+			activityBox.initiateSearch("group_activities","adminsearch");
+			activity.addElement(activityBox);
+			activityBox.datagrid.addEventListener(ItemClickEvent.ITEM_CLICK, dgActivityClicked);
+			initiatedActivity=true;
+		}
+		else
+		{
+			//just search
+			activityBox.newSearch();
+		}
+	}
+]]>
+</fx:Script>
+    <!--<layouts:VLayout width="100%" textAlign="left">-->
+		<sparkcom:SparkPanelBox width="100%" title="Select a Group" id="group">
+			<com:CDropDownList id="groupCombo"/>
+		</sparkcom:SparkPanelBox>	
+		<sparkcom:SparkPanelBox width="100%" title="Select Line of Business"  id="lob">
+			<com:CDropDownList id="lobCombo"/>
+		</sparkcom:SparkPanelBox>
+		<sparkcom:SparkPanelBox width="100%" title="Activity"  id="activity">
+		</sparkcom:SparkPanelBox>
+   <!-- </layouts:VLayout>-->
+</sparkcom:SparkPanelBox>

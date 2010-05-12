@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow title="Message Box"
+				horizontalCenter="0"
+				xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:lauouts="layouts.*"
+				xmlns:views="views.*"
+				creationComplete="handleCreationComplete();"
+				minWidth="400"
+				minHeight="500"
+				close="PopUpManager.removePopUp(this)">
+	<fx:Script>
+		<![CDATA[
+			//import org.ludo.utils.CurrentPage;
+			import org.ludo.utils.LudoUtils;
+			import mx.events.ListEvent;
+			import mx.controls.Alert;
+			import mx.events.ItemClickEvent;
+			import org.ludo.components.mxml.CSearchBox;
+			import mx.managers.PopUpManager;
+			private var searchBox:CSearchBox;
+			private var parentFunction:Function;
+			private var valueFrom:String="";
+			private var vArrayFrom:Array=[];
+			private var vArrayTo:Array=[];
+			private var valueTo:DisplayObject;
+
+			public function initiateSearchOld(gridid:String, gridxmlid:String, valuefrom:String="", valueto:DisplayObject=null, parentFunction:Function=null):void
+			{
+				this.parentFunction=parentFunction;
+				this.valueFrom=valuefrom;
+				this.valueTo=valueto;
+				searchBox=new CSearchBox();
+				searchBox.initiateSearch(gridid, gridxmlid);
+				this.addElement(searchBox);
+			}
+			public function initiateSearch(gridid:String, gridxmlid:String, valuefrom:Array=null, valueto:Array=null, parentFunction:Function=null):void
+			{
+				this.parentFunction=parentFunction;
+				this.vArrayFrom=valuefrom;
+				this.vArrayTo=valueto;
+				searchBox=new CSearchBox();
+				searchBox.initiateSearch(gridid, gridxmlid);
+				this.addElement(searchBox);
+			}
+
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+			{
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+			}
+
+			private function dgItemClicked(event:ListEvent):void
+			{
+				/*
+				if (valueFrom != "" && valueTo != null)
+				{
+					LudoUtils.setFieldValueToSave(valueTo, event.itemRenderer.data[valueFrom]);
+				}
+				*/
+				if(vArrayFrom.length>0 && vArrayTo.length>0 && vArrayFrom.length==vArrayTo.length)
+				{
+					for(var i:int=0;i<vArrayFrom.length;i++)
+					{
+						if (vArrayFrom[i]!="" && vArrayTo[i]!=null)
+						{
+							LudoUtils.setFieldValueToSave(vArrayTo[i], event.itemRenderer.data[vArrayFrom[i]]);
+						}
+					}
+				}
+				if (this.parentFunction != null)
+				{
+					this.parentFunction.call(this, event);
+				}
+				PopUpManager.removePopUp(this);
+			}
+
+			private function handleCreationComplete():void
+			{
+				// Center the TitleWindow container 
+				// over the control that created it.
+				PopUpManager.centerPopUp(this);
+				this.title=searchBox.searchTitle + " -> Click row to select.";
+				if (searchBox.hasControlBar)
+				{
+					//searchBox.resizeControlBarBox(this.titleBar.width, this.titleBar.height);
+					//this.titleBar.addChild(searchBox.controlBarBox);
+					searchBox.resizeControlBarBox(this.controlBarGroup.width, this.controlBarGroup.height);
+					this.controlBarGroup.addElement(searchBox.controlBarBox);
+				}
+				searchBox.datagrid.addEventListener(ItemClickEvent.ITEM_CLICK, dgItemClicked);
+			}
+		]]>
+	</fx:Script>
+	<!--
+		 <mx:VBox horizontalAlign="center" id="main" height="100%" width="100%">
+		 </mx:VBox>
+		 <lauouts:ButtonBox>
+		 <mx:Button id="closeBtn"
+		 label="Close"
+		 click="PopUpManager.removePopUp(this)"/>
+		 </lauouts:ButtonBox>
+	-->
+</s:TitleWindow>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:FormItem width="100%" textAlign="left" direction="horizontal" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx">
+<fx:Script>
+	<![CDATA[
+		[Bindable] public var labelWidth:int=100;
+		[Bindable] public var labelText:String="";
+		[Bindable] public var dataWidth:int=150;
+		[Bindable] public var dataText:String="";
+	]]>
+</fx:Script>
+<mx:Text width="{labelWidth}" text="{labelText}">
+</mx:Text>
+<mx:Text width="{dataWidth}" text="{dataText}">
+</mx:Text>
+</mx:FormItem>

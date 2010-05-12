@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow title="Message Box"
+	horizontalCenter="0"
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:ns1="layouts.*"
+	creationComplete="handleCreationComplete();"
+	minWidth="300"
+	minHeight="200"
+	maxWidth="400"
+	maxHeight="500"
+	close="PopUpManager.removePopUp(this)"
+	xmlns:layouts="org.ludo.layouts.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+            public function setPopupMessage(header:String,detail:String,width:int=300,height:int=200):void 
+            {
+				this.height=height;
+				this.width=width;
+            	this.title=header;
+            	this.msgDetail.text=detail;
+				//this.updateDisplayList(
+           	}
+            private function handleCreationComplete():void 
+            {
+                // Center the TitleWindow container 
+                // over the control that created it.
+                PopUpManager.centerPopUp(this);
+            }
+       ]]>
+	</fx:Script>
+	<s:TextArea editable="false" verticalAlign="top" horizontalScrollPolicy="auto" styleName="popupMsg" height="100%" width="100%" id="msgDetail">
+	</s:TextArea>
+</s:TitleWindow>

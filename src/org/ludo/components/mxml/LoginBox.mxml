@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup horizontalAlign="center"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:ns1="layouts.*"
+		 creationComplete="handleCreationComplete();">
+	<fx:Script>
+		<![CDATA[
+			import mx.containers.TitleWindow;
+			import mx.managers.PopUpManager;
+			import mx.validators.Validator;
+			
+			import org.ludo.controllers.LoginController;
+			import org.ludo.controllers.MessageController;
+
+			private function validateAndSubmit():void
+			{
+				var _array:Array=[usernameValidator, passwordValidator];
+				var results:Array=Validator.validateAll(_array);
+				if (results.length > 0)
+				{
+					MessageController.popUpMessage("Validation Error","Please correct the validation errors highlighted on the form.");
+					return;
+				}
+				if (this.parent is TitleWindow)
+				{
+					PopUpManager.removePopUp(this);
+				}
+				LoginController.getInstance().doLogin(loginTI.text, passwordTI.text, rememberCB.selected);
+			}
+
+			private function handleCreationComplete():void
+			{
+				if (this.parent is TitleWindow)
+				{
+					// Center the TitleWindow container 
+					// over the control that created it.
+					//PopUpManager.centerPopUp(this);           		
+				}
+				LoginController.getInstance().loginbox=this;
+			}
+
+			public function reset():void
+			{
+				loginTI.text="";
+				passwordTI.text="";
+				rememberCB.selected=false;
+				usernameValidator.source.errorString="";
+				passwordValidator.source.errorString="";
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<mx:StringValidator id="usernameValidator"
+							source="{loginTI}"
+							property="text"
+							required="true"
+							maxLength="80"/>
+		<mx:StringValidator id="passwordValidator"
+							source="{passwordTI}"
+							property="text"
+							required="true"
+							minLength="4"
+							maxLength="40"/>
+	</fx:Declarations>
+
+	<s:VGroup horizontalAlign="center"
+			 width="100%">
+		<mx:Form width="100%">
+			<mx:FormItem required="true"
+						 label="Username">
+				<mx:TextInput id="loginTI"/>
+			</mx:FormItem>
+			<mx:FormItem required="true"
+						 label="Password">
+				<mx:TextInput id="passwordTI"
+							  displayAsPassword="true"/>
+			</mx:FormItem>
+			<mx:FormItem label="Remeber password">
+				<s:CheckBox id="rememberCB"/>
+				<!--<mx:CheckBox id="rememberCB"/>-->
+			</mx:FormItem>
+		</mx:Form>
+	</s:VGroup>
+	<s:Button id="loginButton"
+			   label="Login"
+			   click="validateAndSubmit()"/>
+</s:VGroup>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup 
+		verticalAlign="middle"
+		horizontalAlign="center"
+		creationComplete="RefreshItem()"
+		xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		width="100%">
+	<fx:Script>
+		<![CDATA[
+			import org.ludo.utils.LudoUtils;
+			import org.ludo.utils.ClassReference;
+			import mx.collections.XMLListCollection;
+			import org.ludo.utils.ClassReference;
+			[Bindable]
+			private var parentDataField:String;
+			public var pageid:String;
+			private function RefreshItem():void
+			{
+			}
+			public function set setBtnArray(param:Array):void
+			{
+				parentDataField=param[0] as String;
+				var xmllist:XMLList=param[1] as XMLList;
+				var func:String=param[2] as String;
+				var parentFunction:Function;
+				if (func != "")
+				{
+					parentFunction=LudoUtils.getFunctionReferenceByFullPath(func);
+				}
+				for each (var xml:XML in xmllist)
+				{
+					var obj:CLabelButton=new CLabelButton();
+					var view:Boolean=true;
+					for each (var attribute:XML in xml.@*)
+					{
+						view=true;
+						var atrName:String=String(attribute.name());
+						switch (atrName)
+						{
+							case 'permissionfor':
+								view=LudoUtils.pageController.hasPermissionByActivities(String(xml.@permissionfor));
+								break;
+							case 'viewifquotein':
+								view=LudoUtils.pageController.viewMenuIfQuoteIn(String(xml.@viewifquotein));
+								break;
+							default:
+								//obj[attribute.name().toString()]=xml.@[attribute.name()].toString();
+								obj[attribute.name().toString()]=xml.@[atrName].toString();
+								break;
+						}
+						if(!view)
+						{
+							break;
+						}
+					}
+					if(view)
+					{
+						obj.parentFunction=parentFunction;
+						obj.functionParam=param[3] as Array;
+						var style:String=param[4] as String;
+						if (style != "")
+						{
+							obj.styleName=style;
+						}
+						this.addElement(obj);
+					}
+
+/* 					
+					for each (var attribute:XML in xml.@*)
+					{
+						obj[attribute.name().toString()]=xml.@[attribute.name()].toString();
+					}
+ */				}
+			}
+		]]>
+	</fx:Script>
+</s:VGroup>

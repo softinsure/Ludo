@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:ButtonBar horizontalAlign="center"
+			  itemClick="onDataGridButtonClick(event,data)"
+			  creationComplete="RefreshItem()"
+			  initialize="init()"
+			  xmlns:fx="http://ns.adobe.com/mxml/2009"
+			  xmlns:s="library://ns.adobe.com/flex/spark"
+			  xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Button;
+			import mx.events.ItemClickEvent;
+			
+			import org.ludo.utils.CurrentPage;
+			import org.ludo.utils.LudoUtils;
+			[Bindable]
+			private var parentDataField:String;
+			[Bindable]
+			private var parentFunction:Function;
+			[Bindable]
+			private var functionParam:Array;
+			[Bindable]
+			private var style:String;
+			public var pageid:String=CurrentPage.ID;
+			private var iconIndex:Array=[];
+			private function iconToSet():void
+			{
+				for (var idx:int=0; idx < iconIndex.length; idx++)
+				{
+					var iArray:Array=String(iconIndex[idx]).split("::::");
+					if(iArray.length>1)//add icon
+					{
+						attachIcon(iArray[0],iArray[1]);
+					}
+				}
+			}
+			protected function callLaterAttachIcon(idx:int,iconPath:String):void
+			{
+				if(idx<0)
+					return;
+				var aButton:Button=this.getElementAt(idx) as Button;
+				if(aButton!=null)
+				{
+					LudoUtils.setIconToButton(aButton,iconPath);
+				}
+			}
+			private function attachIcon(idx:int,iconPath:String):void
+			{
+				if(idx<0)
+					return;
+				if(this.numElements>idx)
+				{
+					var aButton:Button=this.getElementAt(idx) as Button;
+					if(aButton!=null)
+					{
+						LudoUtils.setIconToButton(aButton,iconPath);
+					}
+					else
+					{
+						this.callLater(this.callLaterAttachIcon, [idx, iconPath]);
+					}
+				}
+			}
+
+			public function onDataGridButtonClick(event:ItemClickEvent, data:Object):void
+			{
+				if (parentFunction != null)
+				{
+					if (functionParam.length > 0)
+					{
+						parentFunction(event, data, functionParam);
+					}
+					else
+					{
+						parentFunction(event, data);
+					}
+				}
+			}
+
+			private function init():void
+			{
+				setStyleName();
+			}
+
+			private function RefreshItem():void
+			{
+				var data:Object=this.data;
+				var vis:Boolean=true;
+				if (data is XML && parentDataField != null)
+				{
+					if (data[parentDataField].toString() == "")
+					{
+						vis=false;
+					}
+				}
+				this.visible=vis;
+				iconToSet();
+			}
+
+			public function set setBtnArray(param:Array):void
+			{
+				parentDataField=param[0] as String;
+				var idx:int=0;
+				var btnArray:Array=[];
+				var xmllist:XMLList=param[1] as XMLList;
+				var func:String=param[2] as String;
+				if (func != "")
+				{
+					parentFunction=LudoUtils.getFunctionReferenceByFullPath(func);
+				}
+				this.functionParam=param[3] as Array;
+				for each (var xml:XML in xmllist)
+				{
+					var obj:Object=new Object();
+					for each (var attribute:XML in xml.@*)
+					{
+						var attr:String=attribute.name();
+						if(attr=='iconmap')
+						{
+							//LudoUtils.setIconToButton(obj,xml.@[attr].toString());
+							iconIndex.push(idx+"::::"+String(xml.@iconmap));
+						}
+						else
+						{
+							obj[attribute.name().toString()]=xml.@[attr].toString();
+						}
+						//obj[attribute.name().toString()]=xml.@[attribute.name()].toString();
+					}
+					btnArray.push(obj);
+					idx++;
+				}
+				style=param[4] as String;
+				this.dataProvider=btnArray;
+			}
+
+			private function setStyleName():void
+			{
+				if (style != "")
+				{
+					this.styleName=style;
+				}
+			}
+		]]>
+	</fx:Script>
+</mx:ButtonBar>

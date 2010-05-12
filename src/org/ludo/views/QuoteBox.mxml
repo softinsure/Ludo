@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layouts:HLayout
+	xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:layouts="org.ludo.layouts.*"
+	width="100%" height="100%"
+	creationComplete="init()" xmlns:views="org.ludo.views.*">
+	<fx:Script>
+		<![CDATA[
+			import org.frest.utils.FrUtils;
+			import org.ludo.utils.LudoUtils;
+			import org.ludo.utils.CurrentPage;
+			
+			import org.ludo.controllers.EventNames;
+			import org.ludo.models.*;
+			private function init() : void
+			{
+				LudoUtils.navController.quoteBox=this;
+				loadQuote();
+			}
+			private function loadQuote():void
+			{
+				LudoUtils.pageController.dataEntryBox=myDataEntryBox;
+				LudoUtils.pageController.dataEntryRightBox=myDataEntryRightBox;
+				CurrentPage.ID="default";
+				LudoUtils.transController.setCurrentTransaction=LudoUtils.modelController.quote.transaction_name;
+				FrUtils.cairngormDispatchEvent(EventNames.LOAD_PAGE);
+			}
+		]]>
+	</fx:Script>
+	<!--<layouts:VLayout width="100%">-->
+	<layouts:DataEntryVBox id="myDataEntryBox"
+		width="100%"
+		height="100%"
+    	>
+	</layouts:DataEntryVBox>
+	<!--</layouts:VLayout>-->
+	<!--<layouts:VLayout width="400">-->
+	<layouts:DataEntryVBox width="400" id="myDataEntryRightBox"
+		height="100%"
+    	>
+	</layouts:DataEntryVBox>
+	<!--</layouts:VLayout>-->
+</layouts:HLayout>

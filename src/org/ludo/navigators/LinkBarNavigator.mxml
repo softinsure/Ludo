@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base:Navigator  gap="1" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" xmlns:base="org.ludo.navigators.base.*">
+	<fx:Script>
+		<![CDATA[
+			import org.ludo.components.custom.DynaLinkBar;
+			import org.ludo.layouts.VLayout;
+			import org.ludo.layouts.labelBox;
+			import org.ludo.utils.LudoUtils;
+			/*
+			override protected function getMenu(menuid:String):INavigationBar
+			{
+				if(menuid!="") return allManues[menuid];
+				return getFirstMenu();
+			}
+			override protected function getFirstMenu():INavigationBar
+			{
+				return allManues[firstManuId];
+			}
+			*/
+			/*
+			private function getMenu(menuid:String):DynaLinkBar
+			{
+				if(menuid!="") return allManues[menuid];
+				return getFirstMenu();
+			}
+			private function getFirstMenu():DynaLinkBar
+			{
+				return allManues[firstManuId];
+			}
+			*/
+			protected override function generateNavigation():void
+			{
+				if(menuXML == null) return;
+				var counter:int=0;
+				for each (var menu:XML in menuXML.children())
+				{
+					var menuid:String=navigatorid+"::"+String(menu.@id);
+					if(counter==0) firstManuId=menuid;
+					counter++;
+					//var menubar:CustomSparkPanel=allPanels[menuid] as CustomSparkPanel;
+					var menubar:VLayout=allPanels[menuid] as VLayout;
+					if(menubar!=null)
+					{
+						menubar.removeAllElements();
+					}
+					else
+					{
+						menubar=new VLayout();
+						this.addElement(menubar);
+					}
+					var newMenu:DynaLinkBar=new DynaLinkBar(menu);
+					if(!newMenu.menuGenerated)
+					{
+						continue;
+					}
+					if(newMenu.title!="")
+					{
+						var titleBox:labelBox=new labelBox();
+						titleBox.headerTitle=newMenu.title;
+					 	//menubar.title=newMenu.title;
+						if(String(menu.@titlestylename)!='')
+						{
+							titleBox.styleName=menu.@titlestylename;
+						}
+						else
+						{
+							titleBox.styleName="linkBarNavigatorTitle";
+						}
+						menubar.addElement(titleBox);
+					}
+					if(currentTransaction!="")
+					{
+						var actionBox:labelBox=new labelBox();
+						actionBox.headerTitle=currentTransaction;
+						//menubar.title=newMenu.title;
+						if(String(menu.@transstylename)!='')
+						{
+							actionBox.styleName=menu.@transstylename;
+						}
+						else
+						{
+							actionBox.styleName="linkBarNavigatorTrans";
+						}
+						menubar.addElement(actionBox);
+					}
+					/*
+					else
+					{
+						menubar.titleBar.visible=false;
+						menubar.titleBar.height=0;
+					}
+					*/
+					/*
+					menubar.keepShadow=false;
+					menubar.keepBorder=false;
+					if(String(menu.@dropshadow)=='true')
+					{
+						menubar.keepShadow=true;
+					}
+					if(String(menu.@border)=='true')
+					{
+						menubar.keepBorder=true;
+					}
+					*/
+					if(String(menu.@stylename)!='')
+					{
+						menubar.styleName=menu.@stylename;
+					}
+					else
+					{
+						menubar.styleName="linkBarNavigator";
+					}
+					if(String(menu.@barstylename)!='')
+					{
+						newMenu.styleName=menu.@barstylename;
+					}
+					else
+					{
+						newMenu.styleName="linkBar";
+					}
+					menubar.setStyle("dropShadowVisible",String(menu.@dropshadow)=='true'?true:false);
+					menubar.setStyle("borderVisible",String(menu.@border)=='true'?true:false);
+					menubar.id=menuid;
+					menubar.addElement(newMenu);
+					allManues[menuid]=newMenu;
+					LudoUtils.navController.allMenus[menuid]=newMenu;
+					if(menu_itemclicked!=null) newMenu.menu_itemclicked=this.menu_itemclicked;
+					if(menuWidth!=-1)
+					{
+						menubar.width=menuWidth;
+						newMenu.width=menuWidth;							
+					}
+					allPanels[menuid]=menubar;
+				}
+	        }
+		]]>
+	</fx:Script>
+</base:Navigator>

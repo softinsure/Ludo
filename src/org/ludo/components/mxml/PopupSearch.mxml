@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow title="Message Box"
+			   horizontalCenter="0"
+			   xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:lauouts="layouts.*"
+			   xmlns:views="views.*"
+			   creationComplete="handleCreationComplete();"
+			   minWidth="400"
+			   minHeight="500"
+			   close="PopUpManager.removePopUp(this)">
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			private var searchBox:CSearchBox;
+			private var initiated:Boolean=false;
+			private function init():void
+			{
+				this.title=searchBox.searchTitle;
+				if(searchBox.hasControlBar)
+				{
+					searchBox.resizeControlBarBox(this.controlBarGroup.width,this.controlBarGroup.height);
+					this.controlBarGroup.addElement(searchBox.controlBarBox);
+					//searchBox.resizeControlBarBox(this.titleBar.width,this.titleBar.height);
+					//this.titleBar.addChild(searchBox.controlBarBox);
+				}
+			}
+			public function initiateSearch(gridid:String,gridxmlid:String):void
+			{
+				if(!initiated)
+				{
+					searchBox = new CSearchBox();
+					searchBox.initiateSearch(gridid,gridxmlid);
+					this.addChild(searchBox);
+					initiated=true;
+				}
+				else
+				{
+					//just search
+					searchBox.doSearch();
+				}
+			}
+			private function handleCreationComplete():void
+			{
+				// Center the TitleWindow container 
+				// over the control that created it.
+				PopUpManager.centerPopUp(this);
+				this.title=searchBox.searchTitle;
+				if (searchBox.hasControlBar)
+				{
+					searchBox.resizeControlBarBox(this.controlBarGroup.width, this.controlBarGroup.height);
+					this.controlBarGroup.addElement(searchBox.controlBarBox);
+					//searchBox.resizeControlBarBox(this.titleBar.width, this.titleBar.height);
+					//this.titleBar.addChild(searchBox.controlBarBox);
+				}
+				//searchBox.datagrid.addEventListener(ItemClickEvent.ITEM_CLICK, dgItemClicked);
+			}
+		]]>
+	</fx:Script>
+</s:TitleWindow>

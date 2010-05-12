@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:layouts="org.ludo.layouts.*"
+	width="100%"
+	horizontalAlign="left"
+	verticalAlign="middle"
+	verticalCenter="0"
+>
+	<fx:Script>
+		<![CDATA[
+			import org.ludo.connectors.ImageConnector;
+			[Bindable]
+			private var message:String;
+			[Bindable]
+			private var style:String="validation";
+			[Bindable]
+			private var imgSource:Class;
+			public function setMessage(message:String,type:String="validation"):void
+			{
+				this.msgDetail.labelbox.text=message;
+				//this.message=message;
+				//this.style=type;
+				this.msgDetail.styleName=style;
+				imgSource=ImageConnector.getImageByName(type);
+			}
+			
+		]]>
+	</fx:Script>
+	<mx:Image source="{imgSource}" verticalAlign="middle" horizontalAlign="center"/>
+	<layouts:labelBox verticalAlign="middle" horizontalAlign="left" height="100%" width="100%" id="msgDetail"/>
+</s:HGroup>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:CheckBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			xmlns:s="library://ns.adobe.com/flex/spark" 
+			xmlns:mx="library://ns.adobe.com/flex/mx"
+			creationComplete="RefreshItem()"
+			initialize="init()"
+			click="onDataGridCheckBoxChecked(event,data)"
+>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+		
+			import org.ludo.utils.LudoUtils;
+			private var parentFunction:Function;
+			[Bindable]
+			private var parentDataField:String;
+			[Bindable]
+			private var parentLabelField:String;
+			private var funtionParam:Array;
+			private var style:String;
+			[Bindable]
+			private var selectifvalueis:String;
+			public var pageid:String;
+			
+			private function RefreshItem():void
+			{
+				var data:Object=this.data;
+				if (data is XML)
+				{
+					if(parentDataField!="")
+					{
+						if(String(data[parentDataField])==selectifvalueis)
+						{
+							this.selected=true;
+						}
+						else
+						{
+							this.selected=false;
+						}
+					}
+					if(parentLabelField!="")
+					{
+						this.label=String(data[parentLabelField]);
+					}
+				}
+			}
+
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				RefreshItem();
+				invalidateDisplayList();
+
+			}
+			private function init():void
+			{
+				if (style != "")
+				{
+					this.styleName=style;
+				}
+			}
+			public function onDataGridCheckBoxChecked(event:Event, data:Object):void
+			{
+				if (parentFunction != null)
+				{
+					if (funtionParam != null && funtionParam.length > 0)
+					{
+						parentFunction(event, data, funtionParam);
+					}
+					else
+					{
+						parentFunction(event, data);
+					}
+				}
+			}
+			public function set setParameters(param:Array):void
+			{
+				var pCount:int=param.length;
+				if(pCount>0)
+				{
+					parentDataField=param[0] as String;
+				}
+				if(pCount>1)
+				{
+					selectifvalueis=param[1] as String;
+				}
+				if(pCount>2)
+				{
+					parentFunction=LudoUtils.getFunctionReferenceByFullPath(param[2] as String) as Function;
+				}
+				if(pCount>3)
+				{
+					funtionParam=param[3] as Array;
+				}
+				if(pCount>4)
+				{
+					parentLabelField=param[4] as String;
+				}
+				if(pCount>5)
+				{
+					style=param[5] as String;
+				}
+			}
+		]]>
+	</fx:Script>
+</mx:CheckBox>

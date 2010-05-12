@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			//import mx.controls.RadioButton;
+			
+			import org.ludo.validators.CustomValidator;
+			
+			import spark.components.RadioButton;
+			public var valuebeforesave:String="";
+			public var value:String="";
+
+			public function set dataProvider(dataArray:ArrayCollection):void
+			{
+				for each (var obj:Object in dataArray)
+				{
+					var radiobutton:RadioButton=new RadioButton()
+					radiobutton.label=obj.label;
+					radiobutton.value=obj.data;
+					radiobutton.group=radiogroup;
+					this.addElement(radiobutton);
+				}
+			}
+
+			public function get selectedItem():RadioButton
+			{
+				return radiogroup.selection;
+			}
+
+			public function set selectedValue(val:String):void
+			{
+				radiogroup.selectedValue=val;
+				value=val;
+			}
+
+			public function get selectedValue():String
+			{
+				if (radiogroup.selectedValue != null)
+				{
+					return radiogroup.selectedValue.toString();
+				}
+				else
+				{
+					return "";
+				}
+			}
+
+			public function set setValidation(validation:String):void
+			{
+				if (validation != "") //add validation
+				{
+					//CustomValidator.createValidators(radiogroup,LudoUtils.dataStore.getFromValidatorContainer(PageManager.getInstance().currentPage),validation);
+				}
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:RadioButtonGroup id="radiogroup" itemClick="value=this.selectedValue"/>
+	</fx:Declarations>
+</s:HGroup>

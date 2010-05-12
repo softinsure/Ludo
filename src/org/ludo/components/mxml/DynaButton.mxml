@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Button label="Button"
+		   click="onDataGridButtonClick(event)"
+		   xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Script>
+		<![CDATA[
+			import flash.utils.getDefinitionByName;
+			
+			import mx.controls.Alert;
+			import mx.events.ItemClickEvent;
+			
+			import org.ludo.utils.ClassReference;
+			import org.ludo.utils.LudoUtils;
+			[Bindable]
+			private var parentFunction:Function;
+			[Bindable]
+			private var parentDataField:String;
+			[Bindable]
+			private var funtionParam:Array;
+			public var pageid:String;
+
+			public function onDataGridButtonClick(event:MouseEvent):void
+			{
+				if (parentFunction != null)
+				{
+					if (funtionParam != null && funtionParam.length > 0)
+					{
+						//parentFunction(event, event.itemRendere.data, funtionParam);
+						parentFunction(event,funtionParam);
+					}
+					else
+					{
+						//parentFunction(event, event.itemRenderer.data);
+						parentFunction(event);
+					}
+				}
+			}
+			public function set setParentDataField(datafield:String):void
+			{
+				parentDataField=datafield;
+			}
+			public function set setParentFunction(func:Function):void
+			{
+				parentFunction=func;
+			}
+
+			public function set setFunctionParamn(param:Array):void
+			{
+				funtionParam=param;
+			}
+			public function set setParentFunctionByName(func:String):void
+			{
+				if (func != "")
+				{
+					parentFunction=LudoUtils.getFunctionReferenceByFullPath(func);
+				}
+			}
+		]]>
+	</fx:Script>
+</s:Button>
