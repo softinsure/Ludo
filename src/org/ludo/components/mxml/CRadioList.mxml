@@ -6,14 +6,12 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
-			//import mx.controls.RadioButton;
-			
 			import org.ludo.validators.CustomValidator;
-			
 			import spark.components.RadioButton;
 			public var valuebeforesave:String="";
-			private var valuewhendpnull:String="";
+			private var noradiobtn:Boolean=false;
 			public var value:String="";
+			private var btnCount:int=0; 
 
 			public function set dataProvider(dataArray:ArrayCollection):void
 			{
@@ -24,25 +22,28 @@
 					radiobutton.value=obj.data;
 					radiobutton.group=radiogroup;
 					this.addElement(radiobutton);
+					btnCount++;
 				}
-				selectedValue=valuewhendpnull;
+				if(noradiobtn)
+				{
+					radiogroup.selectedValue=value;
+					noradiobtn=false;
+				}
 			}
-
 			public function get selectedItem():RadioButton
 			{
 				return radiogroup.selection;
 			}
-
 			public function set selectedValue(val:String):void
 			{
-				if(radiogroup.numRadioButtons>0)
+				value=val;
+				if(btnCount>0)
 				{
 					radiogroup.selectedValue=val;
-					value=val;
 				}
 				else
 				{
-					valuewhendpnull=val;
+					noradiobtn=true;
 				}
 			}
 
