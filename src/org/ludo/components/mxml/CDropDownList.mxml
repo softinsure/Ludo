@@ -9,7 +9,9 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.IList;
 			public var valuebeforesave:String="";
+			private var valuewhendpnull:String="";
 			public function get selectedValue():String
 			{
 				if(dataProvider==null) return "";
@@ -20,6 +22,11 @@
 				return "";
 			}
 			
+			override public function set dataProvider(value:IList):void
+			{   
+				super.dataProvider = value;
+				selectedValue=valuewhendpnull;
+			}
 			// set for selectedValue 
 			public function set selectedValue(value:String):void
 			{

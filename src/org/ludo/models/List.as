@@ -101,7 +101,7 @@ package org.ludo.models
 				obj.data=xml.Data;
 				optCol.addItem(obj);	
 			}
-			LudoUtils.setDataProvider(control,optCol);
+			LudoUtils.setDataProvider(control,optCol,true);
 		}
 	}
 }

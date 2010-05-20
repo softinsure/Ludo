@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:ComboBox xmlns:fx="http://ns.adobe.com/mxml/2009"
-			 xmlns:s="library://ns.adobe.com/flex/spark"
-			 xmlns:mx="library://ns.adobe.com/flex/mx">
+<s:ComboBox
+	typicalItem="{this.selectedItem}"
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:mx="library://ns.adobe.com/flex/mx">
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.IList;
 			public var valuebeforesave:String="";
+			private var valuewhendpnull:String="";
 			public function get selectedValue():String
 			{
 				if(dataProvider==null) return "";
@@ -14,8 +18,11 @@
 				}
 				return "";
 			}
-			
-			// set for selectedValue 
+			override public function set dataProvider(value:IList):void
+			{   
+				super.dataProvider = value;
+				selectedValue=valuewhendpnull;
+			}
 			public function set selectedValue(value:String):void
 			{
 				if(dataProvider!=null)
@@ -34,6 +41,10 @@
 							break;
 						}
 					}
+				}
+				else
+				{
+					valuewhendpnull=value;
 				}
 				if(this.selectedItem==null)
 				{

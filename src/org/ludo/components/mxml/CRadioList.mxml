@@ -12,6 +12,7 @@
 			
 			import spark.components.RadioButton;
 			public var valuebeforesave:String="";
+			private var valuewhendpnull:String="";
 			public var value:String="";
 
 			public function set dataProvider(dataArray:ArrayCollection):void
@@ -24,6 +25,7 @@
 					radiobutton.group=radiogroup;
 					this.addElement(radiobutton);
 				}
+				selectedValue=valuewhendpnull;
 			}
 
 			public function get selectedItem():RadioButton
@@ -33,8 +35,15 @@
 
 			public function set selectedValue(val:String):void
 			{
-				radiogroup.selectedValue=val;
-				value=val;
+				if(radiogroup.numRadioButtons>0)
+				{
+					radiogroup.selectedValue=val;
+					value=val;
+				}
+				else
+				{
+					valuewhendpnull=val;
+				}
 			}
 
 			public function get selectedValue():String

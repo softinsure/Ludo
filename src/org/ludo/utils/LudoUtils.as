@@ -278,11 +278,11 @@ package org.ludo.utils
 				}
 			}
 		}
-		public static function setDataProvider(formitem:IVisualElement,list:ArrayCollection):void
+		public static function setDataProvider(formitem:IVisualElement,list:ArrayCollection,fromdb:Boolean=false):void
 		{
 			if(formitem!=null)
 			{
-				switch(formitem['className'].toString())
+/*				switch(formitem['className'].toString())
 				{
 					case 'CComboBox':
 						(formitem as CComboBox).dataProvider=list;
@@ -301,6 +301,11 @@ package org.ludo.utils
 						break;
 					default:
 						break
+				}*/
+				formitem["dataProvider"]=list;
+				if(fromdb)
+				{
+					//set value before
 				}
 			}
 		}
@@ -311,7 +316,7 @@ package org.ludo.utils
 			{
 				switch(formitem['className'].toString())
 				{
-					case 'CComboBox':
+/*					case 'CComboBox':
 						_retval=(formitem as CComboBox).selectedValue.toString();
 						break;
 					case 'CDropDownList':
@@ -319,6 +324,11 @@ package org.ludo.utils
 						break;
 					case 'CRadioList':
 						_retval=(formitem as CRadioList).selectedValue.toString();
+						break;*/
+					case 'CComboBox':
+					case 'CDropDownList':
+					case 'CRadioList':
+						_retval=formitem["selectedValue"].toString();
 						break;
 					case 'ComboBox':
 						_retval=getValueOfComboBox(formitem as ComboBox).toString();
@@ -714,6 +724,7 @@ package org.ludo.utils
 						case 'DropDownList':
 						case 'CComboBox':
 						case 'ComboBox':
+						case 'CRadioList':
 							prop="selectedValue";
 							break;
 						default:
