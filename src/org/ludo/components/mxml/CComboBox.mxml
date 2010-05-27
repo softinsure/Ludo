@@ -12,7 +12,7 @@
 			public function get selectedValue():String
 			{
 				if(dataProvider==null) return "";
-				if(this.dataProvider.length >0 && this.selectedIndex >0)
+				if(this.dataProvider.length >0 && this.selectedIndex >=0)
 				{
 					return String(this.dataProvider[this.selectedIndex]["data"]);
 				}

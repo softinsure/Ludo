@@ -355,9 +355,9 @@ package org.ludo.controllers
 				}
 				else if(mode=='!E')//not in endorsement
 				{
-					if(LudoUtils.modelController.quote.quote_status=="E")
+					if(LudoUtils.modelController.quote.quote_status!="E")
 					{
-						return false;
+						return true;
 					}
 				}
 				else if(mode=='R')//rated

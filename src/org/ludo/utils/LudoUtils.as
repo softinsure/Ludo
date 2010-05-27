@@ -658,6 +658,10 @@ package org.ludo.utils
 				{
 					obj = obj[f];
 				}
+				if(obj==null)
+				{
+					break;
+				}
 			}
 			return obj;		
 		}
@@ -707,7 +711,12 @@ package org.ludo.utils
 		}
 		public static function getValueFromChain(host:Object,chain:String):String
 		{
-			return String(getObjectFromChain(host,chain));
+			var obj:*=getObjectFromChain(host,chain);
+			if(obj==null)
+			{
+				obj="";
+			}
+			return String(obj);
 			//return obj is String?String(obj):"";
 		}
 		public static function setBindProperty(formitem:Object,host:Object,datamap:String):void
