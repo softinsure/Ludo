@@ -215,7 +215,7 @@ package org.ludo.components.custom
 		}
 		public function changePage():void
 		{
-			enableItem(this.lastSelect, true);
+			enableItem(this.lastSelect,true);
 			this.lastSelect=this.currSelect;
 			CurrentPage.ID=this.nextPage;
 			LudoUtils.formBuilder.PaintPage();

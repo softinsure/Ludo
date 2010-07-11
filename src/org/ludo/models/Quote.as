@@ -248,7 +248,8 @@ package org.ludo.models
 					//unmarshal quote
 					Fr.serializer.unmarshall(XML(event.result),this);
 					LudoUtils.pageController.clearPage();
-					LudoUtils.dataStore.setSession("lob",this.lob);
+					//LudoUtils.dataStore.setSession("lob",this.lob);
+					LudoUtils.modelController.currentSession.setSession("lob",this.lob);
 					if(xmlstore!=null) xmlstore.belongsTo=this;
 					if(currentAction=='create' || currentAction=='show'|| currentAction=='edit'|| currentAction=='clone'|| currentAction=='endorse')
 					{

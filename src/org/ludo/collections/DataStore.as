@@ -27,8 +27,8 @@ package org.ludo.collections
 		private static var coverageContainer:DataContainer;
 		private static var objectMapContainer:DataContainer;
 		private static var initFuncContainer:DataContainer;
-		private static var searchBoxContainer:DataContainer;
-		private static var session:DataContainer;
+		//private static var searchBoxContainer:DataContainer;
+		//private static var session:DataContainer;
 		//Singleton stuff
         //
         private static var dataStore:DataStore;
@@ -45,8 +45,8 @@ package org.ludo.collections
                 coverageContainer = new DataContainer();
                 objectMapContainer = new DataContainer();
                 initFuncContainer = new DataContainer();
-                searchBoxContainer = new DataContainer();
-                session = new DataContainer();
+                //searchBoxContainer = new DataContainer();
+                //session = new DataContainer();
             }
             return dataStore;
         }
@@ -61,6 +61,21 @@ package org.ludo.collections
 		 * @param xml
 		 * 
 		 */
+		public function cleanDataStore():void
+		{
+			dataStore=null;
+			/*
+			emptyPageContainer();
+			emptyXmlMapContainer();
+			emptyDataMapContainer();
+			emptyUnitXmlMapContainer();
+			emptyValidatorContainer();
+			emptyInitFuncContainer();
+			emptyObjectMapContainer();
+			emptyCoverageContainer();
+			*/
+			
+		}
 		public function addToXmlContainer(key:String,xml:XML) : void
 		{
 			xmlContainer.put(key,xml);
@@ -144,16 +159,19 @@ package org.ludo.collections
 		public function getFromInitFuncContainerContainer(key:String) : Function
 		{
 			return initFuncContainer.get(key);
-		}	
+		}
+		/*
 		public function addToSearchBoxContainer(key:String,searchox:SearchBox) : void
 		{
 			searchBoxContainer.put(key,searchox);
 			
 		}
+		
 		public function getFromsearchBoxContainer(key:String):SearchBox
 		{
 			return searchBoxContainer.get(key);
-		}	
+		}
+		*/
 		public static function addToAnyContainer(container:DataContainer,key:String,value:*) : void
 		{
 			container.put(key,value);
@@ -162,15 +180,18 @@ package org.ludo.collections
 		public static function getFromAnyContainer(container:DataContainer,key:String) : *
 		{
 			return container.get(key);
-		}	
+		}
+		/*
 		public function setSession(key:String,value:*) : void
 		{
 			session.put(key,value);
 		}
+		
 		public function getSession(key:String) : *
 		{
 			return session.get(key);
 		}
+		*/
 		public function emptyXmlMapContainer():void
 		{
 			emptyContainer(xmlMapContainer);
@@ -191,10 +212,12 @@ package org.ludo.collections
 		{
 			emptyContainer(xmlContainer);
 		}
+		/*
 		public function emptysSession():void
 		{
 			emptyContainer(session);
 		}
+		*/
 		public function emptyPageContainer():void
 		{
 			emptyContainer(pageContainer);
@@ -211,10 +234,12 @@ package org.ludo.collections
 		{
 			emptyContainer(objectMapContainer);
 		}
+		/*
 		public function emptySearchBoxContainer():void
 		{
 			emptyContainer(searchBoxContainer);
 		}
+		*/
 		private function emptyContainer(container:DataContainer):void
 		{
 			container.empty()

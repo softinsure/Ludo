@@ -12,6 +12,7 @@
 	<fx:Script>
 		<![CDATA[
 			import org.ludo.utils.LudoUtils;
+			private var initDone:Boolean=false;
 			public function init():void
 			{
 				LudoUtils.containerController.leftNavContainer=this.leftNav;
@@ -21,14 +22,16 @@
 				//LudoUtils.containerController.rightHelpContainer=this.rightHelp;
 				//LudoUtils.containerController.rightTopContainer=this.rightTop;
 				LudoUtils.containerController.loadContainer("default");
-				LudoUtils.containerController.applicationRight=this.appRight;
+				initDone=true;
+				//LudoUtils.containerController.applicationRight=this.appRight;
 			}
-/*
-			public function loadMain():void
+			public function refreshMain():void
 			{
-				LudoUtils.containerController.loadContainer("default");
+				if(initDone)
+				{
+					LudoUtils.containerController.loadContainer("default");
+				}
 			}
-*/
 		]]>
 	</fx:Script>
 	<layouts:ApplicationHeader id="appHeader"/>

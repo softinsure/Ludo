@@ -76,7 +76,10 @@ package org.ludo.models
 			{
 				this.paymentplan = new PaymentPlan("paymentschedule");
 				//unmarshal quote
-				Fr.serializer.unmarshall(XML(event.result..row),this.paymentplan);
+				if(event.result..row!=null)
+				{
+					Fr.serializer.unmarshall(XML(event.result..row),this.paymentplan);
+				}
 				this.setSchedule();
 			}
 		}

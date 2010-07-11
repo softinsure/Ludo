@@ -33,7 +33,7 @@ package org.ludo.commands
 		{
 			LudoUtils.navController.appstack.selectedChild=LudoUtils.navController.mainContainer;
 			LudoUtils.navController.appstack.visible=true;
-			//LudoUtils.navController.mainContainer.loadMain();
+			LudoUtils.navController.mainContainer.refreshMain();
 		}
 		public function fault(event : Object) : void
 		{

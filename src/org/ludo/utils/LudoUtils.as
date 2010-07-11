@@ -64,7 +64,8 @@ package org.ludo.utils
 
 		public static function cleanObjects():void
 		{
-/*			dataStore=null;
+			/*
+			dataStore=null;
 			modelController=null;
 			transController=null
 			pageController=null;
@@ -73,7 +74,8 @@ package org.ludo.utils
 			pagesAndPropsController=null;
 			changeDetailController=null;
 			referencedMethods=null;
-*/		}
+			navController=null;*/
+		}
 
 		public static function get xmlMapper():XMLMapper
 		{

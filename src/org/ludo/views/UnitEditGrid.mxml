@@ -223,13 +223,14 @@
 				{
 					if(nounit)
 					{
+						currentIndex=0;
 						return datacollection[0];
 					}
 					else
 					{
+						currentIndex=datacollection.length();
 						return this.blankNode.copy();
 					}
-					currentIndex=datacollection.length();
 				}
 				else
 				{

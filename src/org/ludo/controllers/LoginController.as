@@ -108,15 +108,20 @@ package org.ludo.controllers
             	ErrorController.showErrorObject(error);
      		}
         }
+		/*
 		private function loadMain(event:Object):void
 		{
 			FrUtils.cairngormDispatchEvent(EventNames.LOAD_MAIN);
 		}
+		*/
         public function doLogOut():void
         {
         	try
         	{
         		LudoUtils.modelController.currentSession.destroy();
+				LudoUtils.pageController.clearPage();
+				LudoUtils.dataStore.cleanDataStore();
+				//clean application
         		//CairngormUtils.dispatchEvent(EventNames.DELETE_SESSION);
         	}
             catch (error:Error)

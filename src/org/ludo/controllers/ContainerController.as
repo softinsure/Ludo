@@ -34,6 +34,8 @@ package org.ludo.controllers
 		private var showAppRight:Boolean=false;
 		private static var rightTopContainerCache:DataContainer;
 		private var currentContainerName:String;
+		private static var searchBoxContainer:DataContainer;
+
 		//private static var containerMap:XML;
 		
         public static function getInstance():ContainerController
@@ -42,6 +44,7 @@ package org.ludo.controllers
             {
                 containerManager = new ContainerController();
                 rightTopContainerCache=new DataContainer();
+				searchBoxContainer=new DataContainer();
                 //containerMap=LudoUtils.dataStore.getFromXmlContainer("containermap");
             }
             return containerManager;
@@ -330,7 +333,8 @@ package org.ludo.controllers
 									var searchbox:SearchBox;
 									if(refresh!="true")
 									{
-										searchbox=LudoUtils.dataStore.getFromsearchBoxContainer(searchid);
+										searchbox=searchBoxContainer.get(searchid);
+										//searchbox=LudoUtils.dataStore.getFromsearchBoxContainer(searchid);
 									}
 									if(searchbox==null)
 									{
@@ -341,7 +345,8 @@ package org.ludo.controllers
 									searchbox.initiateSearch(searchid,searchconfig);
 									currentactivity=searchbox;
 									//add to container by searchid
-									LudoUtils.dataStore.addToSearchBoxContainer(searchid,searchbox);
+									searchBoxContainer.put(searchid,searchbox);
+									//LudoUtils.dataStore.addToSearchBoxContainer(searchid,searchbox);
 									detailContainer.addActivity(searchbox);
 								}
 								else

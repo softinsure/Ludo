@@ -189,7 +189,8 @@ package org.ludo.controllers
 								menuClicked.lastSelect=-1;
 								LudoUtils.pageController.clearPage();
 								LudoUtils.pageController.viewOnly=false;
-								LudoUtils.dataStore.setSession("lob", lob);
+								LudoUtils.modelController.currentSession.setSession("lob", lob);
+								//LudoUtils.dataStore.setSession("lob", lob);
 								LudoUtils.modelController.getNewQuoteModel("currentQuote",menuClicked.currentTransaction,lob).create();
 								return;
 							}

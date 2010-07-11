@@ -47,6 +47,8 @@ package org.ludo.models
     	public var agency:Agency;
 		[Ignored]
 		private var permissions:DataContainer;//=new FrModelCollection();
+		[Ignored]
+		private var session:DataContainer;
     	public function Session(label:String="id")
 		{
 			//doUnmarshall=false;
@@ -94,6 +96,17 @@ package org.ludo.models
 			}
 		}
 		[Ignored]
+		public function setSession(key:String,value:*) : void
+		{
+			session.put(key,value);
+		}
+		
+		[Ignored]
+		public function getSession(key:String) : *
+		{
+			return session.get(key);
+		}
+		[Ignored]
 		public function hasPermission(activityCode:String):Boolean
 		{
 			var ret:Boolean=false;
@@ -101,7 +114,8 @@ package org.ludo.models
 			{
 				ret=true;
 			}
-			else if(permissions.get(activityCode+"::"+LudoUtils.dataStore.getSession("lob"))!=null)
+			//else if(permissions.get(activityCode+"::"+LudoUtils.dataStore.getSession("lob"))!=null)
+			else if(permissions.get(activityCode+"::"+getSession("lob"))!=null)
 			{
 				ret=true;
 			}
@@ -234,6 +248,7 @@ package org.ludo.models
 					//LudoUtils.modelController.user=this.user;
 					//permissions
 					permissions = new DataContainer();
+					session=new DataContainer();
 					var pxml:XML=XML(event.result..permissions);
 					if(pxml!=null)
 					{
