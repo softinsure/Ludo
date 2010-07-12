@@ -119,6 +119,7 @@ package org.ludo.models
 		[Ignored]
 		private function checkRequiredFiledsToBindEntered():void
 		{
+			_requiredFieldsToBindEntered=true;
 			arrayRiskPages=[];
 			var reqToBindPages:XMLList=LudoUtils.pagesAndPropsController.getPagesByAttribute("requiredtobind","Y");
 			for each( var xml:XML in reqToBindPages)
