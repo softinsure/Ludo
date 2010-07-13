@@ -24,6 +24,7 @@
 			private var style:String;
 			public var pageid:String;
 			private var iconIndex:Array=[];
+			private var disableifvaluein:Array=[];
 			private function iconToSet():void
 			{
 				for (var idx:int=0; idx < iconIndex.length; idx++)
@@ -33,6 +34,52 @@
 					{
 						attachIcon(iArray[0],iArray[1]);
 					}
+				}
+			}
+			private function disableIfvaluein():void
+			{
+				for (var idx:int=0; idx < disableifvaluein.length; idx++)
+				{
+					var datavalueAr:Array = disableifvaluein[idx].split("::");
+					if(datavalueAr.length>=2)
+					{
+						var fieldvalue:String=getDFVal(datavalueAr.length>=3?datavalueAr[2].toLowerCase():parentDataField);
+						for each(var mode:String in datavalueAr[1].toString().split(','))
+						{
+							if(fieldvalue==mode)
+							{
+								disableBtn(datavalueAr[0],true);
+								break;
+							}
+						}
+					}
+				}
+			}
+			private function disableBtn(idx:int,disable:Boolean):void
+			{
+				if(idx<0)
+					return;
+				if(this.numElements>idx)
+				{
+					var aLinkButton:LinkButton=this.getElementAt(idx) as LinkButton;
+					if(aLinkButton!=null)
+					{
+						aLinkButton.enabled=!disable;
+					}
+					else
+					{
+						this.callLater(this.callLaterDisableBtn, [idx, disable]);
+					}
+				}
+			}
+			protected function callLaterDisableBtn(idx:int,disable:Boolean):void
+			{
+				if(idx<0)
+					return;
+				var aLinkButton:LinkButton=this.getElementAt(idx) as LinkButton;
+				if(aLinkButton!=null)
+				{
+					aLinkButton.enabled=!disable;
 				}
 			}
 			protected function callLaterAttachIcon(idx:int,iconPath:String):void
@@ -94,9 +141,18 @@
 				}
 				callLater(showBar);
 				iconToSet();
+				disableIfvaluein();
 				//this.visible=vis;
 			}
 
+			private function getDFVal(fieldname:String):String
+			{
+				if (this.data is XML)
+				{
+					 return this.data[fieldname].toString()
+				}
+				return "";
+			}
 			public function set setBtnArray(param:Array):void
 			{
 				parentDataField=param[0] as String;
@@ -122,6 +178,9 @@
 						{
 							case 'permissionfor':
 								view=LudoUtils.pageController.hasPermissionByActivities(String(xml.@permissionfor));
+								break;
+							case 'disableifdatafieldvaluein':
+								disableifvaluein.push(idx+"::"+String(xml.@disableifdatafieldvaluein));
 								break;
 							case 'viewifquotein':
 								view=LudoUtils.pageController.viewMenuIfQuoteIn(String(xml.@viewifquotein));
