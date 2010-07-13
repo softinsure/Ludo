@@ -123,6 +123,7 @@ package org.ludo.controllers
 								}
 								else
 								{
+									checkmenu.@id=menu.@id;
 									prevMenu=checkmenu;
 								}
 							}

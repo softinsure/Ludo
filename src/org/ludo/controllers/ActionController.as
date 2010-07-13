@@ -520,9 +520,14 @@ package org.ludo.controllers
 		}
 		protected static function doBind():void
 		{
+			
 			//do not bind here
 			//just call me child function
-			if(LudoUtils.modelController.quote.requiredFiledsToBindEntered)
+			if(LudoUtils.modelController.quote.needs_rating)//if needs rating again
+			{
+				LudoUtils.pageController.showPageErrorMsg("Please rate your policy again before issuance!");
+			}
+			else if(LudoUtils.modelController.quote.requiredFiledsToBindEntered)
 			{
 				callAfterMethod("bind");
 				//callAfterBind();
