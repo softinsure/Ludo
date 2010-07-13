@@ -183,10 +183,6 @@ package org.ludo.models
 			{
 				unitindex=unitindex+1;
 			}
-			else
-			{
-				unitindex="";
-			}
 			for each (var model:PageUpdatedInfo in pageUpdatedInfo)
 			{
 				if(model.pageid==pageid && (model.unit_seq==unitindex || LudoUtils.isEmpty(String(model.unit_seq))))
