@@ -13,6 +13,7 @@ package org.ludo.models
 		private var groupactivity:GroupActivity;
 		private var group:Group;
 		private var lob:LineOfBusiness;
+		private var configxml:ConfigXml;
 		public static function initiateReferences():void
 		{
 			addClassPath("org.ludo.models");

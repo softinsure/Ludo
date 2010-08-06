@@ -1,6 +1,6 @@
 /*******************************************************************************
- * Copyright  2010-2011 Goutam Malakar. All rights reserved.
- * Author: Goutam 
+ * Copyright  2010-2011 SoftInsure. All rights reserved.
+ * Author: SoftInsure 
  * File Name: ReferencedMethods.as 
  * Project Name: Ludo 
  * Created Jan 5, 2010
@@ -10,7 +10,7 @@ package org.ludo.collections
 	/**
 	 * this singletone objects is used to store referenced functions by key. stored functions can
 	 * be called by their referenced keys
-	 * @author Goutam
+	 * @author SoftInsure
 	 * 
 	 */
 	public class ReferencedMethods extends Object

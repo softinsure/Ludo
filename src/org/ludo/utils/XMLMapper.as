@@ -3,6 +3,7 @@ package org.ludo.utils
 	import memorphic.xpath.XPathQuery;
 	
 	import org.common.utils.XStringUtil;
+	import org.common.utils.XXMLUtils;
 	
 	public class XMLMapper
 	{
@@ -425,7 +426,7 @@ package org.ludo.utils
 
 		private static function newXmlList(nodeName:String,nodeValue:String=""):XMLList
 		{
-			return XMLList(XMLUtils.createXMLNode(nodeName,nodeValue));
+			return XMLList(XXMLUtils.createXMLNode(nodeName,nodeValue));
 			/*
 			if(nodeValue!="")
 			{

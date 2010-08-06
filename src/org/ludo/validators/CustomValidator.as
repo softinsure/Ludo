@@ -45,6 +45,9 @@ package org.ludo.validators
 							case 'string':
 								validator=new StringValidator();
 								break;
+							case 'xml':
+								validator=new XmlValidator();
+								break;
 							case 'number':
 								validator=new NumberValidator();
 								break;
@@ -67,7 +70,7 @@ package org.ludo.validators
 								validator=new RadioButtonGroupValidator();
 								break;
 							case 'date':
-								validator=new DateValidator();
+								validator=new  DateValidator();
 								break;
 							case 'servererror':
 								validator=new ServerErrorValidator();

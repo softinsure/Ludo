@@ -301,6 +301,7 @@ package org.ludo.utils
 				case 'combobox':
 				case 'dropdownlist':
 				case 'radiolist':
+				case 'xmltree':
 					AddLabel(pageid,fieldID,frmItem,fieldElement.@label,fieldElement.@labelstyle);
 					break;
 				case 'display':
@@ -462,6 +463,16 @@ package org.ludo.utils
 					aRadioList.selectedValue=defaultval;
 					displayobject=aRadioList;
 					frmItem.addChild(aRadioList);
+					break;
+				case 'xmleditor':
+					var aXmlEditor:CXmlEditor = new CXmlEditor();
+					displayobject=aXmlEditor;
+					frmItem.addChild(aXmlEditor);
+					break;
+				case 'xmltree':
+					var aXmlTree:CXmlTree = new CXmlTree();
+					displayobject=aXmlTree;
+					frmItem.addChild(aXmlTree);
 					break;
 				default:
 					break;

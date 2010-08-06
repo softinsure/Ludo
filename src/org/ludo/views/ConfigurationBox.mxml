@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base:SparkPanelBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/mx" 
+					xmlns:base="org.ludo.sparks.components.base.*" 
+					width="100%" height="100%"
+					creationComplete="sparkpanelbox1_creationCompleteHandler(event)"
+					title="Cofiguration"
+					xmlns:base1="org.ludo.components.base.*" xmlns:xmleditor="org.ludo.components.xmleditor.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			
+			import org.ludo.models.FileReader;
+			[Bindable]
+			private var dirList:XML;
+			private var selectedPath:String="";
+			private var curFile:FileReader;
+
+			[Bindable]
+			private var configXml:XML;
+			protected function sparkpanelbox1_creationCompleteHandler(event:FlexEvent):void
+			{
+				var disklist:FileReader= new FileReader();
+				disklist.file_path="/app/xmlstores";
+				disklist.afterAction=showlist;
+				disklist.action("filelist");
+			}
+			protected function loadFile():void
+			{
+				if(selectedPath=="")
+					return;
+				if(curFile==null)
+				{
+					curFile=new FileReader();
+				}
+				curFile.file_path="/app/xmlstores/"+selectedPath;
+				curFile.afterAction=loadXml;
+				curFile.action("read");
+			}
+			public function showlist(event:Object) : void
+			{
+				dirList=XML(event.result).normalize();
+			}
+			public function loadXml(event:Object) : void
+			{
+				configXml=XML(event.result);
+				xmleditor.editor.loadXml(configXml);
+			}
+			private function nodepath(node:XML):String
+			{
+				var exitloop:Boolean=false;
+				var node2:XML=node.parent();
+				var npath:String=node.localName();
+				while(!exitloop)
+				{
+					if(dirList.localName()!=node2.localName())
+					{
+						npath=node2.localName()+"/"+npath;
+					}
+					if(node2.parent()==null)
+					{
+						exitloop=true;
+					}
+					else
+					{
+						node2=node2.parent();
+					}
+				}
+				return npath;
+			}
+			protected function xmltree_changeHandler(event:ListEvent):void
+			{
+				var file:XML=XmlTree(event.target).selectedItem as XML;
+				if(file.children().length()<1)
+				{
+					btnLoad.enabled=true;
+					selectedPath=nodepath(file);
+				}
+				else
+				{
+					btnLoad.enabled=false;
+					selectedPath="";
+				}
+			}
+
+
+			protected function btnLoad_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				Alert.show(selectedPath);
+				loadFile();
+			}
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:HGroup gap="1" width="100%" height="100%">
+		<s:VGroup width="30%" height="100%">
+			<base1:XmlTree id="xmltree" change="xmltree_changeHandler(event)" dataProvider="{dirList}" width="100%" height="100%"/>
+			<s:Button enabled="false" id="btnLoad" click="btnLoad_clickHandler(event)" label="Load Selected File"/>
+		</s:VGroup>
+	<xmleditor:FlatEditor id="xmleditor" width="70%" height="100%"/>
+	</s:HGroup>
+</base:SparkPanelBox>

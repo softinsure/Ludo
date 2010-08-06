@@ -1,0 +1,77 @@
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="100%" height="100%" xmlns:base="org.ludo.components.base.*">
+
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			
+			import org.ludo.components.xmleditor.*;
+			import org.ludo.controllers.MessageController;
+			[Bindable]
+			public var treeXml:XML;
+			public var valuebeforesave:String="";
+			private var xmltext:XML;
+			[Bindable]
+			private var enable:Boolean=true;
+			
+			public var editable:Boolean=true;
+			
+			override public function set enabled(value:Boolean):void
+			{
+				enable=value;
+			}
+			override public function get enabled():Boolean
+			{
+				return enable;
+			}
+			public function set text(value:Object):void
+			{
+				if(value is XML)
+				{
+					treeXml=value as XML;
+				}
+				else
+				{
+					treeXml=new XML(value.toString());
+				}
+			}
+
+			private function viewSource(event:MouseEvent):void
+			{
+				if(treeXml!=null)
+				{
+					MessageController.popUpMessage("View Source",treeXml.toXMLString(),600,350);
+				}
+			}
+			public function get text():Object
+			{
+				return treeXml==null?'':treeXml.toXMLString();
+			}
+			protected function btnEdit_clickHandler(event:MouseEvent):void
+			{
+				var popEditor:PopupEditor=new PopupEditor();
+				PopUpManager.addPopUp(popEditor,this,true);
+				if(treeXml!=null)
+				{
+					popEditor.initializeWin(treeXml,afterSave);
+				}
+				popEditor.editor.editable=enable;
+				popEditor.editor.noBrowse=!enable;
+			}
+			public function afterSave(node:XML):void
+			{
+				treeXml=node;
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<base:XmlTree id="xmltree" dataProvider="{treeXml}" width="100%" height="100%"/>
+	<s:HGroup gap="1" width="100%" >
+		<s:Button id="btnView" click="viewSource(event)" label="View Source"/>
+		<s:Button id="btnEdit" click="btnEdit_clickHandler(event)" label="{enable?'Editor':'Viewer'}"/>
+	</s:HGroup>
+</s:VGroup>

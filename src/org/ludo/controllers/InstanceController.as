@@ -6,6 +6,7 @@ package org.ludo.controllers
 	import org.ludo.sparks.components.mxml.PopupFinder;
 	import org.ludo.views.AdminBox;
 	import org.ludo.views.AgentInfoBox;
+	import org.ludo.views.ConfigurationBox;
 	import org.ludo.views.DebugBox;
 	import org.ludo.views.HomeBox;
 	import org.ludo.views.PageHolder;
@@ -34,7 +35,7 @@ package org.ludo.controllers
         	}
         	else
         	{
-				MessageController.popUpMessage("Instance Controller",dynamicClass+" not available in InstanceManager. Please add there to use!!");
+				MessageController.popUpMessage("Instance Controller",dynamicClass+" not available in InstanceController. Please add there to use!!");
 				throw new Error(dynamicClass+" not available in InstanceManager. Please add there to use!!");
         	}
         }		
@@ -125,6 +126,9 @@ package org.ludo.controllers
         		case "pageholder":
         			return new PageHolder();
         			break;
+				case "configurationbox":
+					return new ConfigurationBox();
+					break;
         		default:
         			return getNewInstanceByNameFromChild(dynamicClass);
         			break;

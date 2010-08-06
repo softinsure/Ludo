@@ -13,11 +13,14 @@ package org.ludo.utils
 	import mx.controls.dataGridClasses.*;
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElement;
+	import mx.utils.ObjectUtil;
 	import mx.utils.StringUtil;
 	
 	import org.common.utils.XStringUtil;
 	import org.ludo.collections.DataStore;
 	import org.ludo.collections.ReferencedMethods;
+	import org.ludo.components.mxml.ActionButtonBar;
+	import org.ludo.components.mxml.ControlButtonBar;
 	import org.ludo.components.mxml.*;
 	import org.ludo.connectors.ImageConnector;
 	import org.ludo.controllers.ChangeDetailController;
@@ -37,6 +40,7 @@ package org.ludo.utils
 	import spark.components.Application;
 	import spark.components.ComboBox;
 	import spark.components.DropDownList;
+
 	//import spark.components.TextInput;
 	
 
@@ -683,7 +687,7 @@ package org.ludo.utils
 			}
 		}
 		*/
-		public static function setValueToModel(host:Object,chain:String,value:String,modelChanged:Boolean=false):void
+		public static function setValueToModel(host:Object,chain:String,value:Object,modelChanged:Boolean=false):void
 		{
 			var splitChain:Array=chain.split('.');
 			var obj:Object=host;
@@ -706,7 +710,15 @@ package org.ludo.utils
 			{
 				if(parent[attribute] == null ||String(parent[attribute])!=value)
 				{
-					parent[attribute]=value;
+/*					if(ObjectUtil.hasMetadata(parent,attribute,"Xml"))
+					{
+						parent[attribute]=XML(value);
+					}
+					else
+					{
+						parent[attribute]=value;
+					}
+*/					parent[attribute]=value;
 					(parent as BaseModel).changed=modelChanged;
 				}
 			}

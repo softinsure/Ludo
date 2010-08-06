@@ -81,7 +81,7 @@ in acordance with the terms of the license agreement accompanying it.
 		[Bindable]
 		public var cornerRadius:Number;
 		/*
-		Added by Goutam Malakar
+		Added by SoftInsure
 		*/
 		//[Bindable]
 		//private var showbar:Boolean=true;

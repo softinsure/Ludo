@@ -12,6 +12,7 @@
       <libraryPathEntry kind="3" linkType="1" path="/FRest/bin/FRest.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/LudoUtils/bin/LudoUtils.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="1" linkType="1" path="${PROJECT_FRAMEWORKS}/rsls"/>
+      <libraryPathEntry kind="3" linkType="1" path="/XmlEditor/bin/XmlEditor.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>

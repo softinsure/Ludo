@@ -18,7 +18,7 @@
 			import org.ludo.utils.CurrentPage;
 			import org.ludo.utils.LudoUtils;
 			import org.ludo.utils.XMLMapper;
-			import org.ludo.utils.XMLUtils;
+			import org.common.utils.XXMLUtils;
 			public const VIEWING_UNITGRID:int = 0;
 			public const VIEWING_PANEL:int = 1;
 			
@@ -100,7 +100,7 @@
 				{
 					cid=datacollection[0]["@"+identifier];
 					currentIndex=0;
-					this.datacollection[0]=XMLUtils.generateBlankXmlTemplate(XML(datacollection[0]),"Coverage");
+					this.datacollection[0]=XXMLUtils.generateBlankXmlTemplate(XML(datacollection[0]),"Coverage");
 					nounit=true;
 				}
 				else
@@ -390,7 +390,7 @@
 				}
 				if(!nounit)
 				{
-					this.blankNode = XMLUtils.generateBlankXmlTemplate(XML(datacollection[0]),"Coverage");
+					this.blankNode = XXMLUtils.generateBlankXmlTemplate(XML(datacollection[0]),"Coverage");
 					if(blankNode.hasOwnProperty("Coverage"))
 					{
 						for each(var coverage:XML in XMLMapper.getNodeByXpathAndRootNode(blankNode,"Coverage"))

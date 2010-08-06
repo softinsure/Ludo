@@ -1,6 +1,6 @@
 /*******************************************************************************
- * Copyright  2010-2011 Goutam Malakar. All rights reserved.
- * Author: Goutam 
+ * Copyright  2010-2011 SoftInsure. All rights reserved.
+ * Author: SoftInsure 
  * File Name: BaseInput.as 
  * Project Name: Ludo 
  * Created Jan 5, 2010
@@ -15,7 +15,7 @@ package org.ludo.components.base
 	import spark.components.VGroup;
 	/**
 	 * this class is and extension of VGroup and base of all custom inputs  
-	 * @author Goutam
+	 * @author SoftInsure
 	 * 
 	 */	
 	public class BaseInput extends VGroup

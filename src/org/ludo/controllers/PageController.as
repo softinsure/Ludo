@@ -1624,7 +1624,8 @@ package org.ludo.controllers
 				if(!updateToDb) return;
 				//navMgr.updateTransLeftManuXml();
 				model.changed=true;
-				if(model.id==0)
+				model.id==0?model.create():model.update();
+/*				if(model.id==0)
 				{
 					model.create();
 				}
@@ -1632,7 +1633,7 @@ package org.ludo.controllers
 				{
 					model.update();
 				}
-			}
+*/			}
 			else
 			{
 				showPageMessage(NOCHANGE_MSG,"nochange");

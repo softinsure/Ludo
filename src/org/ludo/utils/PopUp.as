@@ -42,6 +42,5 @@ package org.ludo.utils
 			popSearch.initiateSearch(searchid,searchxml);
 			PopUpManager.addPopUp(popSearch,LudoUtils.applicationUsed,true);
 		}
-			
 	}
 }

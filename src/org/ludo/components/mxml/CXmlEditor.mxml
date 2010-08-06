@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xmleditor:FlatEditor xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:mxml="org.ludo.components.mxml.*" width="100%" height="100%" xmlns:xmleditor="org.ludo.components.xmleditor.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			public var valuebeforesave:String="";
+			private var xmltext:XML;
+
+			public function set text(value:Object):void
+			{
+				if(value is XML)
+				{
+					xmltext=value as XML;
+				}
+				else
+				{
+					xmltext=new XML(value.toString());
+				}
+				//this.callLater(this.loadXml,[xmltext]);
+				this.editor.loadXml(xmltext);
+			}
+			public function get text():Object
+			{
+				xmltext=this.editor.treeXml;
+				return xmltext==null?'':xmltext.toXMLString();
+			}
+		]]>
+	</fx:Script>
+</xmleditor:FlatEditor>

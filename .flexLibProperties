@@ -17,7 +17,7 @@
     <classEntry path="org.ludo.components.custom.CoverageInput"/>
     <classEntry path="org.ludo.components.custom.CustomGridColumn"/>
     <classEntry path="org.ludo.components.custom.DynaLinkBar"/>
-    <classEntry path="org.ludo.components.custom.FileUpload"/>
+    <classEntry path="org.ludo.components.mxml.FileUpload"/>
     <classEntry path="org.ludo.components.custom.GridColumnButton"/>
     <classEntry path="org.ludo.components.custom.GridColumnButtonBar"/>
     <classEntry path="org.ludo.components.custom.GridColumnDataField"/>
@@ -118,7 +118,6 @@
     <classEntry path="org.ludo.utils.LudoUtils"/>
     <classEntry path="org.ludo.utils.PopUp"/>
     <classEntry path="org.ludo.utils.XMLMapper"/>
-    <classEntry path="org.ludo.utils.XMLUtils"/>
     <classEntry path="org.ludo.utils.XmlLoder"/>
     <classEntry path="org.ludo.utils.base.IPage"/>
     <classEntry path="org.ludo.utils.base.Page"/>
@@ -158,6 +157,10 @@
     <classEntry path="org.ludo.layouts.PanelBox"/>
     <classEntry path="org.ludo.components.mxml.CDropDownList"/>
     <classEntry path="org.ludo.components.mxml.CTextInput"/>
+    <classEntry path="org.ludo.validators.XmlValidator"/>
+    <classEntry path="org.ludo.components.mxml.CXmlEditor"/>
+    <classEntry path="org.ludo.components.mxml.CXmlTree"/>
+    <classEntry path="org.ludo.views.ConfigurationBox"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

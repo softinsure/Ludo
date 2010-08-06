@@ -1,6 +1,6 @@
 /*******************************************************************************
- * Copyright  2010-2011 Goutam Malakar. All rights reserved.
- * Author: Goutam 
+ * Copyright  2010-2011 SoftInsure. All rights reserved.
+ * Author: SoftInsure 
  * File Name: DataStore.as 
  * Project Name: Ludo 
  * Created Jan 5, 2010
@@ -13,7 +13,7 @@ package org.ludo.collections
 	[Bindable]
 	/**
 	 * storage of data containers used in LUDO.
-	 * @author Goutam
+	 * @author SoftInsure
 	 * 
 	 */
 	public class DataStore
