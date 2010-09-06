@@ -8,10 +8,11 @@
 	width="100%"
 	creationComplete="init()"
 	>
-	<s:ButtonBar id="dynaBar"
+	<s:ButtonBar id="dynaBar" styleName="{myStyle}"
 				  dataProvider="{btnActionList}"
 				  change="onButtonClick(event)"/>
 	<mx:PopUpMenuButton id="moreaction"
+						styleName="{myStyle}"
 						visible="false"
 						label="More Actions"
 						dataProvider="{btnMoreActionArray}"
@@ -31,6 +32,8 @@
 			import spark.events.IndexChangeEvent;
 			//private var clsRef:*;
 			//import utils.DebugMessage;
+			[Bindable]
+			private var myStyle:Object;
 			[Bindable]
 			private var parentFunction:Function;
 			[Bindable]
@@ -64,6 +67,14 @@
 					if (parentFunc == "")
 					{
 						parentFunc="org.ludo.controllers.ActionController.modelControlBarClicked";
+					}
+					if(String(data.@stylename)!='')
+					{
+						myStyle=data.@stylename;
+					}
+					else
+					{
+						myStyle="actionBar";
 					}
 					parentFunction=LudoUtils.getFunctionReferenceByFullPath(parentFunc);
 					setAction(LudoUtils.filterByViewMode(data.action,currentpageid));

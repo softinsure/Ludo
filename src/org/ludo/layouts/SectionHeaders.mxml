@@ -1,10 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layouts:labelBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
-				  xmlns:s="library://ns.adobe.com/flex/spark" 
-				  xmlns:mx="library://ns.adobe.com/flex/mx"
-				  xmlns:layouts="org.ludo.layouts.*" width="100%"
-				  styleName="sectionHeader">
+<s:SkinnableContainer
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	width="100%"
+	minHeight="50"
+	xmlns:containers="org.ludo.containers.*" 
+	xmlns:layouts="org.ludo.layouts.*">
+	<s:layout>
+		<s:HorizontalLayout gap="0" horizontalAlign="left" verticalAlign="middle"/>
+	</s:layout>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-</layouts:labelBox>
+	<fx:Script>
+		<![CDATA[
+			static private var styleManager: IStyleManager2;
+			[Bindable]
+			public var label:String;
+			[Bindable]
+			private var myStyle:Object;
+			override public function set styleName(value:Object):void
+			{
+				myStyle=value;
+			}
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+			{
+				if(getStyle("borderColor")!=null)
+				{
+					leftLine.color=getStyle("borderColor");
+					rightLine.color=getStyle("borderColor");
+				}
+				if(getStyle("titleStyleName")!=null)
+				{
+					titleDisplay.styleName=getStyle("titleStyleName");
+				}
+				var hdColor:Array=getStyle("headerColors");
+				if(hdColor==null) return;
+				if(hdColor.length>0)
+				{
+					topGroupGr1.color=styleManager.getColorName(hdColor[0]);
+					topGroupGr2.color=styleManager.getColorName(hdColor[0]);
+				}
+				if(hdColor.length>1)
+				{
+					topGroupGr2.color=styleManager.getColorName(hdColor[1]);
+				}
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+			}	
+		]]>
+	</fx:Script>
+	<s:Rect left="0" right="0" top="0" bottom="0" height="1" width="10" alpha=".8">
+		<s:fill>
+			<s:SolidColor id="leftLine" color="0xE2E2E2" />
+		</s:fill>
+	</s:Rect>
+	<s:Group id="titleDisplay">
+		
+		<!-- layer 0: title bar fill -->
+		<!--- @private -->
+		<s:Rect id="tbFill" left="0" right="0" top="0" bottom="1">
+			<s:fill>
+				<s:LinearGradient rotation="90">
+					<s:GradientEntry id="topGroupGr1" color="0xE2E2E2"/>
+					<s:GradientEntry id="topGroupGr2" color="0xD9D9D9"/>
+				</s:LinearGradient>
+				<!--
+				<s:SolidColor color="{getStyle('titleBarBackgroundColor')}" />
+				-->
+			</s:fill>
+		</s:Rect>
+		<!-- layer 3: text -->
+		<!--- @copy spark.components.Panel#titleDisplay -->
+		<s:Label text="{label}"
+				 maxDisplayedLines="1"
+				 left="5" right="5" top="3" bottom="3"
+				 verticalAlign="middle" fontWeight="bold">
+		</s:Label>
+	</s:Group>
+	<s:Rect left="0" right="0" top="0" bottom="0" height="1" width="100%" alpha=".8">
+		<s:fill>
+			<s:SolidColor id="rightLine" color="0xE2E2E2" />
+		</s:fill>
+	</s:Rect>
+</s:SkinnableContainer>

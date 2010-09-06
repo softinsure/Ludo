@@ -291,6 +291,7 @@
 				{
 					ErrorController.logErrorTwo("UnitEditGrid: " + e.toString(),"init","init");
 				}
+				this.paneltoadd.styleName="unitBlock";
 				this.unitgrid.horizontalScrollPolicy="off";
 			}
 			private function initCoverageUnits():void

@@ -17,9 +17,9 @@ package org.ludo.components.custom
 		public function GridColumnDataGrid(columnInfo:XML,pageid:String="")
 		{
 			super(columnInfo,pageid);
-			var factory:ClassFactory=new ClassFactory(NestedGrid);
-			factory.properties={setGridSet:String(columnInfo.@fieldset),setDataField:dataField};
-			this.itemRenderer = factory;
+			factory2=new ClassFactory(NestedGrid);
+			factory2.properties={setGridSet:String(columnInfo.@fieldset),setDataField:dataField};
+			//this.itemRenderer = factory;
 		}
 	}	 
 }

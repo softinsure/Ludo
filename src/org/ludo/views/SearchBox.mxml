@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<sparkcom:SparkPanelBox
+<base:SparkPanelBox
 	xmlns:fx="http://ns.adobe.com/mxml/2009"
 	xmlns:s="library://ns.adobe.com/flex/spark"
 	xmlns:mx="library://ns.adobe.com/flex/mx"
 	height="100%"
 	width="100%"
-	xmlns:sparkcom="org.ludo.sparks.components.base.*"
-	creationComplete="init()"
+	creationComplete="init()" 
+	xmlns:base="org.ludo.components.base.*"
 	>
 	<fx:Script>
 	<![CDATA[
@@ -48,4 +48,4 @@
 		}
 		]]>
 	</fx:Script>
-</sparkcom:SparkPanelBox>
+</base:SparkPanelBox>

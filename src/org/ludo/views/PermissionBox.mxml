@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<sparkcom:SparkPanelBox
+<base:SparkPanelBox
 	xmlns:fx="http://ns.adobe.com/mxml/2009"
   	xmlns:s="library://ns.adobe.com/flex/spark"
   	xmlns:mx="library://ns.adobe.com/flex/mx"
   	width="100%"
   	xmlns:com="org.ludo.components.mxml.*" 
-  	xmlns:sparkcom="org.ludo.sparks.components.base.*"
   	title="Set Group Permissions"
-	creationComplete="init()"
+	creationComplete="init()" xmlns:base="org.ludo.components.base.*" xmlns:layouts="org.ludo.layouts.*"
 >
 <fx:Script>
 <![CDATA[
@@ -16,7 +15,7 @@
 	
 	import org.ludo.utils.LudoUtils;
 
-	private var activityBox:org.ludo.components.mxml.CSearchBox=new org.ludo.components.mxml.CSearchBox();
+	//private var activityBox:org.ludo.components.mxml.CSearchBox=new org.ludo.components.mxml.CSearchBox();
 	private var initiatedActivity:Boolean=false;
 	private var selectedActivity:String="";
 	private function init():void
@@ -65,7 +64,7 @@
 		if(!initiatedActivity)
 		{
 			activityBox.initiateSearch("group_activities","adminsearch");
-			activity.addElement(activityBox);
+			//activity.addElement(activityBox);
 			activityBox.datagrid.addEventListener(ItemClickEvent.ITEM_CLICK, dgActivityClicked);
 			initiatedActivity=true;
 		}
@@ -78,13 +77,27 @@
 ]]>
 </fx:Script>
     <!--<layouts:VLayout width="100%" textAlign="left">-->
-		<sparkcom:SparkPanelBox width="100%" title="Select a Group" id="group">
+	<mx:FormItem direction="horizontal">
+		<layouts:labelBox label="Select a Group" width="150"/>
+		<com:CDropDownList id="groupCombo"/>
+	</mx:FormItem>
+	<mx:FormItem direction="horizontal">
+		<layouts:labelBox label="Select Line of Business" width="150"/>
+		<com:CDropDownList id="lobCombo"/>
+	</mx:FormItem>
+	<mx:FormItem direction="horizontal">
+		<layouts:labelBox label="Slect Activities" width="150"/>
+		<com:CSearchBox id="activityBox"/>
+	</mx:FormItem>
+	<!--		
+		<base:SparkPanelBox width="100%" title="Select a Group" id="group">
 			<com:CDropDownList id="groupCombo"/>
-		</sparkcom:SparkPanelBox>	
-		<sparkcom:SparkPanelBox width="100%" title="Select Line of Business"  id="lob">
+		</base:SparkPanelBox>	
+		<base:SparkPanelBox width="100%" title="Select Line of Business"  id="lob">
 			<com:CDropDownList id="lobCombo"/>
-		</sparkcom:SparkPanelBox>
-		<sparkcom:SparkPanelBox width="100%" title="Activity"  id="activity">
-		</sparkcom:SparkPanelBox>
+		</base:SparkPanelBox>
+		<base:SparkPanelBox width="100%" title="Activity"  id="activity">
+		</base:SparkPanelBox>
+	-->
    <!-- </layouts:VLayout>-->
-</sparkcom:SparkPanelBox>
+</base:SparkPanelBox>

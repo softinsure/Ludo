@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<base:SparkPanelBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
-					xmlns:s="library://ns.adobe.com/flex/spark" 
-					xmlns:mx="library://ns.adobe.com/flex/mx" 
-					xmlns:base="org.ludo.sparks.components.base.*" 
-					width="100%" height="100%"
-					creationComplete="sparkpanelbox1_creationCompleteHandler(event)"
-					title="Cofiguration"
-					xmlns:base1="org.ludo.components.base.*" xmlns:xmleditor="org.ludo.components.xmleditor.*">
+<s:HGroup gap="1"  xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" 
+		  width="100%" height="100%"
+		  xmlns:base1="org.ludo.components.base.*" 
+		  xmlns:xmleditor="org.ludo.components.xmleditor.*" >
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
 			import mx.controls.Alert;
@@ -90,20 +91,17 @@
 			protected function btnLoad_clickHandler(event:MouseEvent):void
 			{
 				// TODO Auto-generated method stub
-				Alert.show(selectedPath);
+				//Alert.show(selectedPath);
 				loadFile();
 			}
 
 		]]>
 	</fx:Script>
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
-	<s:HGroup gap="1" width="100%" height="100%">
-		<s:VGroup width="30%" height="100%">
+	<base1:SparkPanelBox width="30%" height="100%" creationComplete="sparkpanelbox1_creationCompleteHandler(event)" title="Cofiguration">
+		<s:VGroup width="100%" height="100%">
 			<base1:XmlTree id="xmltree" change="xmltree_changeHandler(event)" dataProvider="{dirList}" width="100%" height="100%"/>
 			<s:Button enabled="false" id="btnLoad" click="btnLoad_clickHandler(event)" label="Load Selected File"/>
 		</s:VGroup>
+	</base1:SparkPanelBox>
 	<xmleditor:FlatEditor id="xmleditor" width="70%" height="100%"/>
-	</s:HGroup>
-</base:SparkPanelBox>
+</s:HGroup>

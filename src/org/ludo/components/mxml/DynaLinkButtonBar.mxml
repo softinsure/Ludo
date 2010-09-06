@@ -208,10 +208,10 @@
 			}
 			private function setStyleName():void
 			{
-				if(style != "")
+/* 				if(style != "")
 				{
 					this.styleName=style;
-				}
+				} */
 			}
 			private function showBar():void
 			{

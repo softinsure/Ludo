@@ -28,7 +28,7 @@ package org.ludo.components.custom
 			var boxStyle:String=String(columnInfo.@stylename);
 			var modelclasspath:String=String(columnInfo.@modelclasspath);
 			var paramArray:Array;
-			var factory:ClassFactory;
+			//var factory:ClassFactory;
 			if(String(columnInfo.@methodparam)!="")
 			{
 				paramArray=columnInfo.@methodparam.split(",");
@@ -53,14 +53,16 @@ package org.ludo.components.custom
 			{
 				paramArray=[];
 			}
-			factory = new ClassFactory(DynaCheckBox);
-			factory.properties={label:String(columnInfo.@label),setParameters:[columnName,selectifvalueis,parentFunc,paramArray,labelfield,boxStyle]};
-			this.itemRenderer = factory;
+			factory2 = new ClassFactory(DynaCheckBox);
+			factory2.properties={label:String(columnInfo.@label),setParameters:[columnName,selectifvalueis,parentFunc,paramArray,labelfield,boxStyle]};
+			//this.itemRenderer = factory;
 		}
+		/*
 		override public function itemToLabel(data:Object):String
 		{
 			this.itemRenderer.newInstance();
 			return super.itemToLabel(data);
 		}
+		*/
 	}	 
 }

@@ -29,10 +29,10 @@ package org.ludo.utils
 	import org.ludo.layouts.DataEntryVBox;
 	import org.ludo.layouts.PageHeaders;
 	import org.ludo.layouts.PageMsgBox;
-	import org.ludo.layouts.PageTipBox;
 	import org.ludo.layouts.PanelBox;
-	import org.ludo.layouts.PanelTipBox;
+	//import org.ludo.layouts.PanelTipBox;
 	import org.ludo.layouts.SectionHeaders;
+	import org.ludo.layouts.TipBox;
 	import org.ludo.models.*;
 	import org.ludo.views.UnitEditGrid;
 	
@@ -266,7 +266,7 @@ package org.ludo.utils
 					break;
 				case 'secheader':
 					var secheader:SectionHeaders = new SectionHeaders();
-					secheader.headerTitle=fieldElement.@title;
+					secheader.label=fieldElement.@title;
 					if(String(fieldElement.@properties)!="")
 					{
 						LudoUtils.setFieldProperties(secheader,fieldElement.@properties);
@@ -721,7 +721,7 @@ package org.ludo.utils
 					//page menu
 					//header
 					var pHeader:PageHeaders = new PageHeaders();
-					pHeader.headerTitle=page.@title;
+					pHeader.label=page.@title;
 					dataEntryBox.addElement(pHeader);
 					//dataEntryBox.addChild(pHeader);
 					//add header id
@@ -733,8 +733,10 @@ package org.ludo.utils
 					//page tip
 					if(String(page.@tip) != "")
 					{
-						var pagetip:PageTipBox = new PageTipBox();
+						var pagetip:TipBox = new TipBox();
+						pagetip.styleName="pageTipBox";
 						pagetip.tip=String(page.@tip);
+						pagetip.icon="pagetip";
 						dataEntryBox.addElement(pagetip);
 						//dataEntryBox.addChild(pagetip);
 					}
@@ -785,10 +787,16 @@ package org.ludo.utils
 						{
 							aPanel.styleName=n.@stylename;
 						}
+						else
+						{
+							aPanel.styleName="pageBlock";
+						}
 						if(String(n.@tip) != "")
 						{
-							var panelTip:PanelTipBox = new PanelTipBox();
+							var panelTip:TipBox = new TipBox();
+							panelTip.styleName="panelTipBox";
 							panelTip.tip=String(n.@tip);
+							panelTip.icon="paneltip";
 							aPanel.addElement(panelTip);
 						}
 						//check if this is a grid

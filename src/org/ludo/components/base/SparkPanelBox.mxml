@@ -2,7 +2,7 @@
 <s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 skinClass="org.ludo.sparks.skins.PanelBoxSkin"
+		 skinClass="org.ludo.components.skins.CSparkPanel"
 		 >
 	<s:layout>
 		<s:VerticalLayout gap="1"/>

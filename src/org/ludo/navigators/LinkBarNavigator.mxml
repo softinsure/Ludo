@@ -56,7 +56,6 @@
 					if(newMenu.title!="")
 					{
 						var titleBox:labelBox=new labelBox();
-						titleBox.headerTitle=newMenu.title;
 					 	//menubar.title=newMenu.title;
 						if(String(menu.@titlestylename)!='')
 						{
@@ -66,12 +65,12 @@
 						{
 							titleBox.styleName="linkBarNavigatorTitle";
 						}
+						titleBox.label=newMenu.title;
 						menubar.addElement(titleBox);
 					}
 					if(currentTransaction!="")
 					{
 						var actionBox:labelBox=new labelBox();
-						actionBox.headerTitle=currentTransaction;
 						//menubar.title=newMenu.title;
 						if(String(menu.@transstylename)!='')
 						{
@@ -81,6 +80,7 @@
 						{
 							actionBox.styleName="linkBarNavigatorTrans";
 						}
+						actionBox.label=currentTransaction;
 						menubar.addElement(actionBox);
 					}
 					/*

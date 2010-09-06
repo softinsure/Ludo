@@ -3,7 +3,7 @@ package org.ludo.controllers
 	import mx.controls.Alert;
 	
 	import org.frest.collections.DataContainer;
-	import org.ludo.sparks.components.mxml.PopupFinder;
+	import org.ludo.components.mxml.PopupFinder;
 	import org.ludo.views.AdminBox;
 	import org.ludo.views.AgentInfoBox;
 	import org.ludo.views.ConfigurationBox;

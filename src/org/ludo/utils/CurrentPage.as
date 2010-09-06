@@ -52,7 +52,7 @@ package org.ludo.utils
 		}
 		public static function set title (title:String):void
 		{
-			(getElmentByID(ID+"_title") as PageHeaders).headerTitle=title;
+			(getElmentByID(ID+"_title") as PageHeaders).label=title;
 		}
 		public static function setFieldLabel (id:String,label:String):void
 		{

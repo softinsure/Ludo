@@ -3,18 +3,18 @@
 	xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx"
-	width="100%"
->
+	width="100%">
 <fx:Script>
 	<![CDATA[
 		[Bindable]
-		public var headerTitle:String;
-
+		public var label:String;
+		[Bindable]
+		private var myStyle:Object;
 		override public function set styleName(value:Object):void
 		{
-			labelbox.styleName=value;
+			myStyle=value;
 		}
 	]]>
 </fx:Script>
-	<s:Label width="100%" height="100%" id="labelbox" text="{headerTitle}"/>
+	<s:Label width="100%" height="100%" styleName="{myStyle}" id="labelbox" text="{label}"/>
 </s:HGroup>

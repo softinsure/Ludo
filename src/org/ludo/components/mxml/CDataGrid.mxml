@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<base:AutosizingDataGrid minColumnWidth="20" dataProvider="{datacollection}" columns="{columncollections}" xmlns:base="org.ludo.components.base.*" variableRowHeight="true" width="100%" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx">
+<base:AutosizingDataGrid 
+	minColumnWidth="20" 
+	dataProvider="{datacollection}" 
+	columns="{columncollections}" 
+	xmlns:base="org.ludo.components.base.*" 
+	variableRowHeight="true" 
+	width="100%" 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	headerBackgroundSkin="org.ludo.components.skins.CDataGridHeaderBackgroundSkin">
 	<fx:Script>
 		<![CDATA[
 			[Bindable]

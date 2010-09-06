@@ -12,7 +12,7 @@ package org.ludo.commands
 	
 	import org.ludo.utils.ConfigLoder;
 	import org.ludo.utils.LudoUtils;
-	import org.ludo.utils.XmlLoder;
+	//import org.ludo.utils.XmlLoder;
 
 	public class LoadPageCommand implements ICommand
 	{

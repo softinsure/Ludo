@@ -8,12 +8,16 @@
 package org.ludo.components.custom
 {
 	import mx.controls.dataGridClasses.DataGridColumn;
+	import mx.core.ClassFactory;
+	import mx.core.IFactory;
 	
 	import org.ludo.utils.CurrentPage;
 	import org.ludo.utils.LudoUtils;
 
 	public class CustomGridColumn extends DataGridColumn
 	{
+//		protected var factory:ClassFactory;
+		protected var factory2:ClassFactory;
 		public var pageid:String="";
 		public function CustomGridColumn(columnInfo:XML,pageid:String)
 		{
@@ -49,6 +53,17 @@ package org.ludo.components.custom
 				this.labelFunction=LudoUtils.getFunctionReferenceByFullPath(columnInfo.@labelFunction);
 			}
 			headerWordWrap=true;
+		}
+		override public function getItemRendererFactory(forHeader:Boolean, data:Object):IFactory
+		{
+			if(factory2!=null && !forHeader)
+			{
+				return factory2;
+			}
+			else
+			{
+				return super.getItemRendererFactory(forHeader,data);
+			}
 		}
 		override public function itemToLabel(data:Object):String
 		{

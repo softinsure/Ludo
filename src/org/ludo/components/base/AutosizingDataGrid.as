@@ -24,8 +24,13 @@ package org.ludo.components.base
 		{
 			super();
 			this.defaultRowCount=0;
+			//this.setStyle("headerColors",["red","red"]);
 		}
-		protected function checkIfGridToBeHidden():void
+/*		override public function set styleName(value:Object):void
+		{
+			callLater(super.setStyle,["styleName",value]);
+		}
+*/		protected function checkIfGridToBeHidden():void
 		{
 			this.visible=hideIfNoRow?dataProvider.length>0:true;
 			if(this.parent!=null)

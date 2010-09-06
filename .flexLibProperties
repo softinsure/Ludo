@@ -72,13 +72,10 @@
     <classEntry path="org.ludo.layouts.ActivityHeader"/>
     <classEntry path="org.ludo.layouts.ApplicationHeader"/>
     <classEntry path="org.ludo.layouts.ApplicationRight"/>
-    <classEntry path="org.ludo.layouts.ButtonBox"/>
     <classEntry path="org.ludo.layouts.DataEntryVBox"/>
     <classEntry path="org.ludo.layouts.HLayout"/>
     <classEntry path="org.ludo.layouts.ItemBox"/>
     <classEntry path="org.ludo.layouts.PageMsgBox"/>
-    <classEntry path="org.ludo.layouts.PageTipBox"/>
-    <classEntry path="org.ludo.layouts.PanelTipBox"/>
     <classEntry path="org.ludo.layouts.SectionHeaders"/>
     <classEntry path="org.ludo.layouts.VLayout"/>
     <classEntry path="org.ludo.layouts.labelBox"/>
@@ -102,10 +99,7 @@
     <classEntry path="org.ludo.objects.BaseMap"/>
     <classEntry path="org.ludo.objects.DataMap"/>
     <classEntry path="org.ludo.objects.XmlMap"/>
-    <classEntry path="org.ludo.sparks.components.base.CustomSparkPanel"/>
-    <classEntry path="org.ludo.sparks.components.mxml.PopupFinder"/>
-    <classEntry path="org.ludo.sparks.skins.CustomPanelSkin"/>
-    <classEntry path="org.ludo.sparks.skins.FxApplicationSkin"/>
+    <classEntry path="org.ludo.components.mxml.PopupFinder"/>
     <classEntry path="org.ludo.staticfunctions.DatagridLabel"/>
     <classEntry path="org.ludo.utils.BrowserUtil"/>
     <classEntry path="org.ludo.utils.ClassReference"/>
@@ -153,7 +147,7 @@
     <classEntry path="org.ludo.models.FileReader"/>
     <classEntry path="org.ludo.components.mxml.DynaCheckBox"/>
     <classEntry path="org.ludo.layouts.PageHeaders"/>
-    <classEntry path="org.ludo.sparks.components.base.SparkPanelBox"/>
+    <classEntry path="org.ludo.components.base.SparkPanelBox"/>
     <classEntry path="org.ludo.layouts.PanelBox"/>
     <classEntry path="org.ludo.components.mxml.CDropDownList"/>
     <classEntry path="org.ludo.components.mxml.CTextInput"/>
@@ -161,6 +155,9 @@
     <classEntry path="org.ludo.components.mxml.CXmlEditor"/>
     <classEntry path="org.ludo.components.mxml.CXmlTree"/>
     <classEntry path="org.ludo.views.ConfigurationBox"/>
+    <classEntry path="org.ludo.components.skins.CSparkPanel"/>
+    <classEntry path="org.ludo.components.skins.CDataGridHeaderBackgroundSkin"/>
+    <classEntry path="org.ludo.components.skins.CSparkTitleWindowSkin"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

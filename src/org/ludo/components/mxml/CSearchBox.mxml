@@ -10,7 +10,7 @@
 		 paddingTop="5"
 		 gap="1"
 		 xmlns:layouts="org.ludo.layouts.*" 
-		 xmlns:mxml="org.ludo.components.mxml.*">
+			 xmlns:mxml="org.ludo.components.mxml.*">
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
@@ -670,10 +670,9 @@
 					horizontalGap="1"
 					width="100%"/>
 	</s:HGroup>
-	<layouts:PageTipBox id="searchTip"
+	<layouts:TipBox icon="help" styleName="pageTipBox" id="searchTip"
 						tip="{searchtip}"/>
-	<s:HGroup styleName="searchButtonBox"
-			 id="buttonBox">
+	<s:HGroup id="buttonBox">
 		<s:Button styleName="searchButton"
 				   label="New Search"
 				   click="newSearch()"
@@ -683,16 +682,17 @@
 				   click="resetPanel()"
 				   width="100"/>
 	</s:HGroup>
-	<s:HGroup styleName="searchPanelBox"
-			 gap="1"
+	<s:HGroup gap="1"
 			 id="searchPanel"
 			 width="100%">
-		<layouts:PanelBox title="Search By"
+		<layouts:PanelBox styleName="searchBy" 
+						  title="Search By"
 						  width="100%"
 						  height="100%"
 						  id="searchByBox">
 		</layouts:PanelBox>
-		<layouts:PanelBox title="Order By"
+		<layouts:PanelBox styleName="orderBy"
+						  title="Order By"
 						  width="100%"
 						  height="100%"
 						  id="orderByBox">

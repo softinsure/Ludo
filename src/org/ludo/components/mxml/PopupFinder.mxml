@@ -17,7 +17,6 @@
 			import mx.events.ListEvent;
 			import mx.controls.Alert;
 			import mx.events.ItemClickEvent;
-			import org.ludo.components.mxml.CSearchBox;
 			import mx.managers.PopUpManager;
 			private var searchBox:CSearchBox;
 			private var parentFunction:Function;

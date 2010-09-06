@@ -11,6 +11,7 @@
 	maxWidth="400"
 	maxHeight="500"
 	close="PopUpManager.removePopUp(this)"
+	styleName="popupMsg"
 	xmlns:layouts="org.ludo.layouts.*">
 	<fx:Script>
 		<![CDATA[

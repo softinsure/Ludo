@@ -5,7 +5,7 @@ package org.ludo.utils
 	import mx.managers.PopUpManager;
 	
 	import org.ludo.components.mxml.PopupSearch;
-	import org.ludo.sparks.components.mxml.PopupFinder;
+	import org.ludo.components.mxml.PopupFinder;
 	import org.ludo.views.PopupMsgBox;
 	import org.ludo.views.SearchBox;
 	

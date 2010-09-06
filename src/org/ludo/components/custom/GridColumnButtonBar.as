@@ -45,24 +45,23 @@ package org.ludo.components.custom
 				}
 				paramArray.unshift(modelclasspath);//first is model path
 			}
-			var factory:ClassFactory;
 			switch(type.toLowerCase())
 			{
 				case 'label':
-					factory= new ClassFactory(DynaLabelButtonBar);
-					factory.properties={pageid:pageid,setBtnArray:[columnName,btnArray,parentFunc,paramArray,buttonStyle]};
+					factory2= new ClassFactory(DynaLabelButtonBar);
+					factory2.properties={pageid:pageid,setBtnArray:[columnName,btnArray,parentFunc,paramArray,buttonStyle]};
 					break;
 				case 'link':
-					factory= new ClassFactory(DynaLinkButtonBar);
-					factory.properties={pageid:pageid,setBtnArray:[columnName,btnArray,parentFunc,paramArray,buttonStyle]};
+					factory2= new ClassFactory(DynaLinkButtonBar);
+					factory2.properties={pageid:pageid,setBtnArray:[columnName,btnArray,parentFunc,paramArray,buttonStyle]};
 					break
 				default:
-					factory= new ClassFactory(DynaButtonBar)
-					factory.properties={pageid:pageid,setBtnArray:[columnName,btnArray,parentFunc,paramArray,buttonStyle]};
+					factory2= new ClassFactory(DynaButtonBar);
+					factory2.properties={pageid:pageid,setBtnArray:[columnName,btnArray,parentFunc,paramArray,buttonStyle]};
 					break
 			}			
 			//var factory:ClassFactory = new ClassFactory(DynaButtonBar);
-			this.itemRenderer = factory;
+			//this.itemRenderer = factory2;
 			if(String(columnInfo.@properties)!="")
 			{
 				LudoUtils.setObjectProperties(this,columnInfo.@propertie);

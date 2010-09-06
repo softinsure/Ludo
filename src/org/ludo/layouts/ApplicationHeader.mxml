@@ -1,8 +1,11 @@
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
-		 xmlns:s="library://ns.adobe.com/flex/spark"
-		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 xmlns:containers="org.ludo.containers.*"
-		 width="100%">
+<s:SkinnableContainer
+	xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx" 
+	width="100%"
+	minHeight="0"
+	xmlns:containers="org.ludo.containers.*">
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+	</s:layout>
 	<fx:Script>
 		<![CDATA[
 			import org.ludo.utils.LudoUtils;
@@ -12,7 +15,14 @@
 			private var desc:String="";
 			[Bindable]
 			private var imgSource:Class;
-
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+			{
+				if(getStyle("dividerColor")!=null)
+				{
+					bottomLine.color=getStyle("dividerColor");
+				}
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+			}	
 			public function set headerDescription(desc:String):void
 			{
 				this.desc=desc;
@@ -47,4 +57,9 @@
 			 </s:VGroup>
 		-->
 	</s:HGroup>
-</s:Group>
+	<s:Rect left="0" right="0" top="0" bottom="0" height="1" width="100%" alpha=".8">
+		<s:fill>
+			<s:SolidColor id="bottomLine" color="0x000000" />
+		</s:fill>
+	</s:Rect>
+</s:SkinnableContainer>

@@ -27,9 +27,10 @@ package org.ludo.components.custom
 			{
 				paramArray=[];
 			}
-			var factory:ClassFactory = new ClassFactory(DynaButton);
-			factory.properties={label:String(columnInfo.@label),setParentFunctionByName:String(columnInfo.@method),setFunctionParamn:paramArray};
-			this.itemRenderer = factory;
+			//var factory:ClassFactory = new ClassFactory(DynaButton);
+			factory2 = new ClassFactory(DynaButton);
+			factory2.properties={label:String(columnInfo.@label),setParentFunctionByName:String(columnInfo.@method),setFunctionParamn:paramArray};
+			//this.itemRenderer = factory;
 		}
 	}	 
 }
