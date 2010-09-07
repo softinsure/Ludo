@@ -26,7 +26,6 @@ package org.ludo.controllers
 	import org.ludo.objects.XmlMap;
 	import org.ludo.utils.CurrentPage;
 	import org.ludo.utils.LudoUtils;
-	import org.ludo.utils.PopUp;
 	import org.ludo.utils.XMLMapper;
 	import org.ludo.validators.CustomValidator;
 	import org.ludo.validators.ServerErrors;

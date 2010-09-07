@@ -824,7 +824,8 @@ package org.ludo.utils
 									if(gridnode.length()>0)
 									{
 										//if filter
-										_unitgrid.datacollection=gridnode;
+										_unitgrid.collection=gridnode;
+										//_unitgrid.datacollection=gridnode;
 									}
 									else
 									{

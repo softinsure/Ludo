@@ -11,6 +11,7 @@
 			import mx.events.CloseEvent;
 			
 			import org.common.utils.XStringUtil;
+			import org.common.utils.XXMLUtils;
 			import org.ludo.components.custom.CoverageInput;
 			import org.ludo.controllers.ErrorController;
 			import org.ludo.controllers.MessageController;
@@ -18,7 +19,6 @@
 			import org.ludo.utils.CurrentPage;
 			import org.ludo.utils.LudoUtils;
 			import org.ludo.utils.XMLMapper;
-			import org.common.utils.XXMLUtils;
 			public const VIEWING_UNITGRID:int = 0;
 			public const VIEWING_PANEL:int = 1;
 			
@@ -32,6 +32,7 @@
 			
 			private var nounit:Boolean=false;
 			private var newunit:Boolean=false;
+			public var parentNode:XML
 
 			[Bindable]
 			private var readonly:Boolean=false;
@@ -49,6 +50,17 @@
 			public var currentIndex:int=0;
 			public var unitMap:String="";
 
+			public function set collection(list:XMLList):void
+			{
+				if(list.length()>0)
+				{
+					datacollection=list;
+					if(list.parent()!=null)
+					{
+						parentNode=list.parent()[0];
+					}
+				}
+			}
 			public function get unitCount():int
 			{
 				if(nounit)
@@ -107,6 +119,7 @@
 				{
 					currentIndex=unitgrid.selectedIndex;
 					cid=datacollection[currentIndex]["@"+identifier];
+					//delete from parent
 					delete datacollection[unitgrid.selectedIndex];
 					resetAllIdentifier();
 				}
@@ -273,6 +286,10 @@
 			}
 			private function addNodeToCollection():XML
 			{
+				if(parentNode!=null)
+				{
+					parentNode.insertChildAfter(this.datacollection[this.datacollection.length()-1],this.currentNode);
+				}
 				this.datacollection[this.datacollection.length()]=this.currentNode;
 				return this.currentNode;
 			}
