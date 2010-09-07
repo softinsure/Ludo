@@ -132,7 +132,6 @@ package org.ludo.models
 			}
 			this.quote.xmlstore.payment_schedule=payment_xml;
 			this.quote.changed;
-			this.quote.changed;
 			this.quote.xmlstore.changed;
 		}
 	}

@@ -23,7 +23,7 @@ package org.ludo.utils
 			LudoUtils.modelController.configFileReader.action("configloader");
 		}
 
-		public function parseConfig(event:Object) : void
+		public function parseConfig(event:Object,model:Object) : void
 		{
 			var configFiles:XMLList=XML(event.result).children();
 			if(configFiles!=null)

@@ -3,6 +3,7 @@ package org.ludo.models
 	import mx.collections.Sort;
 	import mx.collections.SortField;
 	import mx.collections.XMLListCollection;
+	import mx.controls.Alert;
 	
 	import org.frest.Fr;
 	import org.frest.collections.FrModelCollection;
@@ -204,11 +205,15 @@ package org.ludo.models
 				pageupdatedinfo.required_fields_entered=true;
 			}
 			//pageupdatedinfo.required_fields_entered=true;
-			pageupdatedinfo.changed=true;
+			//pageupdatedinfo.changed=true;
 			pageupdatedinfo.toBeDeleted=unitdelete;
 			pageupdatedinfo.unit_seq=unitindex;
 			pageupdatedinfo.belongsTo=this;
 			pageupdatedinfo.changed=true;
+			if(unitdelete)
+			{
+				pageupdatedinfo.afterDestroy=removePageUpdInfo;
+			}
 			if(this.quote_status=="A")
 			{
 				checkRequiredFiledsToBindEntered();
@@ -217,6 +222,11 @@ package org.ludo.models
 			{
 				changeDetail2();//LudoUtils.changeDetailController.allChanges.children();
 			}
+		}
+		[Ignored]
+		private function removePageUpdInfo(event:Object,model:Object):void
+		{
+			pageUpdatedInfo.removeModel(model);
 		}
 		[Ignored]
 		protected override function onFailure(event:Object):void

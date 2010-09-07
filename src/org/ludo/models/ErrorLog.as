@@ -35,7 +35,7 @@ package org.ludo.models
 		{
 			return "Description:\n"+error_desc+"\nType:\n"+error_type+"\nSource:\n"+error_source;
 		}
-		private function showError(event:Object):void
+		private function showError(event:Object,model:Object):void
 		{
 			ErrorController.showError(this);
 		}

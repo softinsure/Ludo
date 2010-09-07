@@ -82,36 +82,36 @@ package org.ludo.models
 			switch(currentAction.toLowerCase())//do a lowercase
         	{
         		case "show":
-					afterShow.call(this,event);
+					afterShow.call(this,event,this);
 					break;
         		case "update":
-					afterUpdate.call(this,event);
+					afterUpdate.call(this,event,this);
        			break;
         		case "destroy":
-					afterDestroy.call(this,event);
+					afterDestroy.call(this,event,this);
         			break;
         		case "create":
-					afterCreate.call(this,event);
+					afterCreate.call(this,event,this);
 				case "clone":
-					afterClone.call(this,event);
+					afterClone.call(this,event,this);
         			break;
 				default:
-					afterAction.call(this,event);
+					afterAction.call(this,event,this);
 					break;
         	}
 		}
 		[Ignored]
-		public var afterShow:Function = function (event:Object):void{};
+		public var afterShow:Function = function (event:Object,model:Object=null):void{};
 		[Ignored]
-		public var afterCreate:Function = function (event:Object):void{};
+		public var afterCreate:Function = function (event:Object,model:Object=null):void{};
 		[Ignored]
-		public var afterUpdate:Function = function (event:Object):void{};
+		public var afterUpdate:Function = function (event:Object,model:Object=null):void{};
 		[Ignored]
-		public var afterDestroy:Function = function (event:Object):void{};
+		public var afterDestroy:Function = function (event:Object,model:Object=null):void{};
 		[Ignored]
-		public var afterClone:Function = function (event:Object):void{};
+		public var afterClone:Function = function (event:Object,model:Object=null):void{};
 		[Ignored]
-		public var afterAction:Function = function (event:Object):void{};
+		public var afterAction:Function = function (event:Object,model:Object=null):void{};
 		[Ignored]
 		protected override function onFailure(event:Object):void
 		{

@@ -260,7 +260,7 @@ package org.ludo.controllers
 		public static function modelGridCheckBoxClicked(event:MouseEvent,data:Object,param:Array=null):void
 		{
 		}
-		private static function loadModelPage(event:Object):void
+		private static function loadModelPage(event:Object,model:Object):void
 		{
 			LudoUtils.containerController.loadActivityDetail("pageholder",true);
 			/*

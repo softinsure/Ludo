@@ -120,13 +120,18 @@
 					currentIndex=unitgrid.selectedIndex;
 					cid=datacollection[currentIndex]["@"+identifier];
 					//delete from parent
-					delete datacollection[unitgrid.selectedIndex];
+					if(parentNode!=null)
+					{
+						delete parentNode.children()[datacollection[currentIndex].childIndex()];
+					}
+					delete datacollection[currentIndex];
 					resetAllIdentifier();
 				}
 				showControls=false;
 				showAllCoverage=false;
 				resetGrid();
 				LudoUtils.pageController.pageChanged=true;
+				LudoUtils.modelController.quote.xmlstore.changed=true;
 				LudoUtils.pageController.addToChangeDetail(cid,pageid,"D",cid,"","xml","","",unitMap);
 				LudoUtils.pageController.updateQuoteToDB(currentIndex,true);
 			}

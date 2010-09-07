@@ -13,11 +13,13 @@ package org.ludo.models
 		public function PageUpdatedInfo(label:String="id")
 		{
 			super(label);
-			afterCreate=attachToQuote;
+			//afterCreate=attachToQuote;
 		}
+		/*
 		private function attachToQuote(event:Object):void
 		{
 			//LudoUtils.modelController.quote.pageUpdatedInfo.addModel(this.internalKey,this);
 		}
+		*/
 	}
 }

@@ -41,11 +41,11 @@
 				curFile.afterAction=loadXml;
 				curFile.action("read");
 			}
-			public function showlist(event:Object) : void
+			public function showlist(event:Object,model:Object) : void
 			{
 				dirList=XML(event.result).normalize();
 			}
-			public function loadXml(event:Object) : void
+			public function loadXml(event:Object,model:Object) : void
 			{
 				configXml=XML(event.result);
 				xmleditor.editor.loadXml(configXml);
