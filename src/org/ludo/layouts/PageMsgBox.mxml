@@ -19,13 +19,15 @@
 			private var style:String="validation";
 			[Bindable]
 			private var imgSource:Class;
-			public function setMessage(message:String,type:String="validation"):void
+			public var isGlobal:Boolean=false;
+			public function setMessage(message:String,type:String="validation",global:Boolean=false):void
 			{
 				//this.msgDetail.labelbox.text=message;
 				//this.msgDetail.label=message;
 				//this.message=message;
 				this.style=type;
 				this.msg=message;
+				isGlobal=global;
 				//this.msgDetail.styleName=style;
 				imgSource=ImageConnector.getImageByName(type);
 			}

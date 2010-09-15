@@ -158,6 +158,8 @@
     <classEntry path="org.ludo.components.skins.CSparkPanel"/>
     <classEntry path="org.ludo.components.skins.CDataGridHeaderBackgroundSkin"/>
     <classEntry path="org.ludo.components.skins.CSparkTitleWindowSkin"/>
+    <classEntry path="org.ludo.models.BillingInfo"/>
+    <classEntry path="org.ludo.components.custom.ETextInput"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

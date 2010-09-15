@@ -645,10 +645,10 @@ package org.ludo.utils
 			{
 				//if the page is already generated
 				//hide page message
-				if(where!="right")
+/*				if(where!="right")
 				{
 					MessageController.hidePageErrorMsg();
-				}
+				}*/
 				var storedPage:Array=LudoUtils.pageController.pageContainer(pageid);
 				//check if we need to redraw
 				if(storedPage!=null)

@@ -78,7 +78,9 @@ package org.ludo.models
 				//unmarshal quote
 				if(event.result..row!=null)
 				{
-					Fr.serializer.unmarshall(XML(event.result..row),this.paymentplan);
+					var pplan:XML=XML(event.result..row);
+					if(pplan.length()>0)
+						Fr.serializer.unmarshall(pplan,this.paymentplan);
 				}
 				this.setSchedule();
 			}
@@ -101,6 +103,7 @@ package org.ludo.models
 		[Ignored]
 		public function setSchedule() : void
 		{
+			//this.quote.installment_number=paymentplan.installment_number;
 			this.quote.installment=0.00;
 			this.quote.policy_fee=paymentplan.policy_fee;
 			this.quote.total_charge=Number(this.quote.quoted_premium+paymentplan.policy_fee);
@@ -119,7 +122,9 @@ package org.ludo.models
 			{
 				var aSchedule1:Schedule=new Schedule();
 				aSchedule1.item='Installment '+(i+1);
-				aSchedule1.amount=((paymentplan[seq[i]+"_percent"]*quote.quoted_premium/100)+paymentplan.installment_fee).toFixed(2);//+paymentplan.policy_fee).toFixed(2);
+				//aSchedule1.amount=((paymentplan[seq[i]+"_percent"]*quote.quoted_premium/100)+paymentplan.installment_fee).toFixed(2);//+paymentplan.policy_fee).toFixed(2);
+				aSchedule1.amount=(paymentplan[seq[i]+"_percent"]*quote.quoted_premium/100).toFixed(2);//+paymentplan.policy_fee).toFixed(2);
+				aSchedule1.installment_fee=paymentplan.installment_fee.toString();//+paymentplan.policy_fee).toFixed(2);
 				//first one is installmet fee
 				if(i==0)
 				{
@@ -140,6 +145,7 @@ class Schedule extends Object
 {
 	public var item:String="";
 	public var amount:String="";
+	public var installment_fee:String="";
 	public var duedate:String="";
 
 	public function Schedule()
@@ -148,7 +154,7 @@ class Schedule extends Object
 	}
 	public function get getXMLNode():XML
 	{
-		return <Schedule><Item>{item==null?"":item}</Item><Amount>{amount==null?"":amount}</Amount><DueDate>{duedate==null?"":duedate}</DueDate></Schedule>;
+		return <Schedule><Item>{item==null?"":item}</Item><Amount>{amount==null?"":amount}</Amount><InstallmentFee>{installment_fee==null?"":installment_fee}</InstallmentFee><DueDate>{duedate==null?"":duedate}</DueDate></Schedule>;
 		//return new XML(("<schedule><item>"+item==null?"":item+"</item><amount>"+amount==null?"":amount+"</amount><duedate>"+duedate==null?"":duedate+"</duedate></schedule>"));
 	}
 }

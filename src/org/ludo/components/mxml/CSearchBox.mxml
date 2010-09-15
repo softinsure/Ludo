@@ -672,7 +672,7 @@
 	</s:HGroup>
 	<layouts:TipBox icon="help" styleName="pageTipBox" id="searchTip"
 						tip="{searchtip}"/>
-	<s:HGroup id="buttonBox">
+	<s:HGroup id="buttonBox" styleName="searchButtonBox">
 		<s:Button styleName="searchButton"
 				   label="New Search"
 				   click="newSearch()"

@@ -164,6 +164,11 @@ package org.ludo.models
 			return _requiredFieldsToBindEntered;
 		}
 		[Ignored]
+		public function getMailingAddress():XML
+		{
+			return LudoUtils.modelController.xmlMapper.getNodeByXpath(LudoUtils.getConfigValue("mailingaddresstag"))[0];
+		}
+		[Ignored]
 		public function getUnitNumOfRequiredFiledsToBindEntered(pageid:String):Array
 		{
 			var idx:Array=[];
@@ -206,6 +211,7 @@ package org.ludo.models
 			}
 			//pageupdatedinfo.required_fields_entered=true;
 			//pageupdatedinfo.changed=true;
+			pageupdatedinfo.showMessage=true;
 			pageupdatedinfo.toBeDeleted=unitdelete;
 			pageupdatedinfo.unit_seq=unitindex;
 			pageupdatedinfo.belongsTo=this;

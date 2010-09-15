@@ -26,49 +26,6 @@ package org.ludo.controllers
 	
 	public class ActionController
 	{
-		//private static var callRaterFunction:Function;
-		//private static var callAfterMakeApplicationFunction:Function;
-		//private static var callAfterBindFunction:Function;
-		//private static var callAfterProduceFunction:Function;
-		/*
-		public static function set setAfterBindFunction(func:Function):void
-		{                                                                   
-			callAfterBindFunction = func;
-		}
-		public static function set setAfterProduceFunction(func:Function):void
-		{                                                                   
-			callAfterProduceFunction = func;
-		}
-		public static function set setAfterMakeApplicationFunction(func:Function):void
-		{                                                                   
-			callAfterMakeApplicationFunction = func;
-		}
-		protected static function callAfterBind():void
-		{
-			if(callAfterBindFunction!=null)
-			{
-				callAfterBindFunction.call();
-			}
-		}
-		protected static function callAfterProduce():void
-		{
-			if(callAfterProduceFunction!=null)
-			{
-				callAfterProduceFunction.call();
-			}
-		}
-		protected static function callAfterMakeApplication():void
-		{
-			if(callAfterMakeApplicationFunction!=null)
-			{
-				callAfterMakeApplicationFunction.call();
-			}
-		}
-		public static function set setMyRaterFunction(func:Function):void
-		{                                                                   
-			callRaterFunction = func;
-		}
-		*/
 		protected static function callRater():void
 		{
 			LudoUtils.referencedMethods.callMethod("rate");
@@ -141,6 +98,7 @@ package org.ludo.controllers
 					if(!LudoUtils.pageController.confirmIfChanged(menuClicked.confirmBeforeChangePage))
 					{
 						menuClicked.changePage();
+						MessageController.hidePageErrorMsg();
 					}
 					/*
 					else

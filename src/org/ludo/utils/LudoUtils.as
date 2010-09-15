@@ -19,9 +19,9 @@ package org.ludo.utils
 	import org.common.utils.XStringUtil;
 	import org.ludo.collections.DataStore;
 	import org.ludo.collections.ReferencedMethods;
+	import org.ludo.components.mxml.*;
 	import org.ludo.components.mxml.ActionButtonBar;
 	import org.ludo.components.mxml.ControlButtonBar;
-	import org.ludo.components.mxml.*;
 	import org.ludo.connectors.ImageConnector;
 	import org.ludo.controllers.ChangeDetailController;
 	import org.ludo.controllers.ConfigurationController;
@@ -40,6 +40,7 @@ package org.ludo.utils
 	import spark.components.Application;
 	import spark.components.ComboBox;
 	import spark.components.DropDownList;
+	import spark.components.TextInput;
 
 	//import spark.components.TextInput;
 	
@@ -246,11 +247,11 @@ package org.ludo.utils
 			}
 			return "";
 		}
-		public static function setCursorPositionInTextInput(field:TextInput,pos:int):void
+		public static function setCursorPositionInTextInput(field:spark.components.TextInput,pos:int):void
 		{
-			//field.selectRange(pos,pos);
-			field.selectionBeginIndex=pos;
-			field.selectionEndIndex=pos;
+			field.selectRange(pos,pos);
+			//field.selectionBeginIndex=pos;
+			//field.selectionEndIndex=pos;
 		}
  		public static function setCursorPositionInTextArea(field:TextArea,pos:int):void
 		{

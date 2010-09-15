@@ -58,14 +58,38 @@ in accordance with the terms of the license agreement accompanying it.
 		{
 			var hdColor:Array=getStyle("headerColors");
 			if(hdColor==null) return;
-			if(hdColor.length>0)
+			if(hdColor.length==1)
 			{
 				topGroupGr1.color=styleManager.getColorName(hdColor[0]);
 				topGroupGr2.color=styleManager.getColorName(hdColor[0]);
 			}
 			if(hdColor.length>1)
 			{
+				topGroupGr1.color=styleManager.getColorName(hdColor[0]);
 				topGroupGr2.color=styleManager.getColorName(hdColor[1]);
+			}
+		}
+		private function setControlBarStyle():void
+		{
+			if(bottomGroup==null) return;
+			var ftColor:Array=getStyle("controlBarColors");
+			if(ftColor!=null)
+			{
+				if(ftColor.length==1)
+				{
+					bottomGroupGr1.color=styleManager.getColorName(ftColor[0]);
+					bottomGroupGr2.color=styleManager.getColorName(ftColor[0]);
+				}
+				if(ftColor.length>1)
+				{
+					bottomGroupGr1.color=styleManager.getColorName(ftColor[0]);
+					bottomGroupGr2.color=styleManager.getColorName(ftColor[1]);
+				}
+			}
+			var cbStyle:Array=getStyle("controlBarStyleName");
+			if(cbStyle!=null)
+			{
+				bottomGroup.styleName=cbStyle;
 			}
 		}
        /**
@@ -113,7 +137,8 @@ in accordance with the terms of the license agreement accompanying it.
             borderStroke.alpha = getStyle("borderAlpha");
             backgroundFill.color = getStyle("backgroundColor");
             backgroundFill.alpha = getStyle("backgroundAlpha");
-			setTitleBarBackgroundColors();//added by Goutam Malakar to cutomize title bar           
+			setTitleBarBackgroundColors();//added by Goutam Malakar to cutomize title bar
+			setControlBarStyle();//added by Goutam Malakar to cutomize control bar
             super.updateDisplayList(unscaledWidth, unscaledHeight);
         }
         
@@ -174,7 +199,7 @@ in accordance with the terms of the license agreement accompanying it.
         <s:Rect id="border" left="0" right="0" top="0" bottom="0" >
             <s:stroke>
                 <!--- @private -->
-                <s:SolidColorStroke id="borderStroke" weight="1" />
+                <s:SolidColorStroke id="borderStroke" weight="0" />
             </s:stroke>
         </s:Rect>
         
@@ -257,7 +282,7 @@ in accordance with the terms of the license agreement accompanying it.
                     <!-- layer 0: control bar divider line -->
                     <s:Rect left="0" right="0" top="0" height="1" alpha="0.22">
                         <s:fill>
-                            <s:SolidColor color="0x000000" />
+                            <s:SolidColor id="bottomGroupDiv" color="0x000000" />
                         </s:fill>
                     </s:Rect>
                     
@@ -275,8 +300,8 @@ in accordance with the terms of the license agreement accompanying it.
                     <s:Rect left="1" right="1" top="2" bottom="1">
                         <s:fill>
                             <s:LinearGradient rotation="90">
-                                <s:GradientEntry color="0xDADADA" />
-                                <s:GradientEntry color="0xC5C5C5" />
+                                <s:GradientEntry id="bottomGroupGr1" color="0xDADADA" />
+                                <s:GradientEntry id="bottomGroupGr2" color="0xC5C5C5" />
                             </s:LinearGradient>
                         </s:fill>
                     </s:Rect>

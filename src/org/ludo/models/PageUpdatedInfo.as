@@ -13,6 +13,7 @@ package org.ludo.models
 		public function PageUpdatedInfo(label:String="id")
 		{
 			super(label);
+			showMessage=false;
 			//afterCreate=attachToQuote;
 		}
 		/*

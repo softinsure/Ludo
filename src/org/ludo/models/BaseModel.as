@@ -50,8 +50,10 @@ package org.ludo.models
 				if(!Fr.crudTransactionQueue.hasAnyTransaction && showMessage)
 				{
 					LudoUtils.pageController.showSuccessMsg();
+					//showMessage=false;
 				}
 			}
+			showMessage=false;
 			afterOnSuccess(event);
 		}
 		[Ignored]

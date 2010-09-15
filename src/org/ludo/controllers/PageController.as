@@ -43,7 +43,7 @@ package org.ludo.controllers
 		public var pageToGo:String="";
 		//public var nextPage:String="default";
 		//public var previousPage:String="default";
-		private var propsOfPageInProcess:PageProperties;
+		//private var propsOfPageInProcess:PageProperties;
 		//public var pageChanged:Boolean=false;
 		public var pageClean:Boolean=false;
 		public var changeDetail:Boolean=false;
@@ -51,9 +51,13 @@ package org.ludo.controllers
 		public var updateToDb:Boolean=true;
 		public var pageValidated:Boolean=true;
 		public var pageExit:Boolean=true;
-		public var pageLoaded:Boolean=false;
+		//public var pageLoaded:Boolean=false;
 		//private var pageMsgAdded:Boolean=false;
-		
+
+		private var processingPage:String="";
+		private var defaultPageChanged:Boolean=false;
+		private var rightPageChanged:Boolean=false;
+
 		public var dataEntryBox:spark.components.Group;
 		public var dataEntryRightBox:spark.components.Group;
 		public var dataEntryInnerBox:DataEntryVBox;
@@ -120,6 +124,18 @@ package org.ludo.controllers
 			viewmode=value;
         }
 		*/
+		private function setPageChanged():void
+		{
+			pageChanged=true;
+			if(processingPage=="D")
+			{
+				defaultPageChanged=true;
+			}
+			else if(processingPage=="R")
+			{
+				rightPageChanged=true;
+			}
+		}
 		public function ifReadOnly(pageid:String):Boolean
         {
 			try
@@ -559,6 +575,9 @@ package org.ludo.controllers
 			pageClean=false;
 			pageChanged=false;
 			pageExit=true;
+			processingPage="";
+			rightPageChanged=false;
+			defaultPageChanged=false;
 		}
 		public function resetPageID():void
 		{
@@ -632,7 +651,15 @@ package org.ludo.controllers
 				}
 				*/
 				//this.dataEntryBox.removeAllChildren();
-				this.dataEntryBox.removeAllElements();
+				if(dataEntryBox.contains(pageMessageBox) && pageMessageBox.isGlobal)
+				{
+					this.dataEntryBox.removeAllElements();
+					dataEntryBox.addElementAt(pageMessageBox,0);
+				}
+				else
+				{
+					this.dataEntryBox.removeAllElements();
+				}
 					//pageMsgAdded=false;
 			}
 		}
@@ -805,8 +832,11 @@ package org.ludo.controllers
 			{
 				savedUnitIndex=0;
 				hasUnit=false;
+				processingPage="D";
 				savePageByID(currentPageID);
+				processingPage="R";
 				savePageByID(currentRightPageID);
+				processingPage="";
 				if(this.pageChanged)
 				{
 					if(!updateToDb)
@@ -893,7 +923,8 @@ package org.ludo.controllers
 					}
 				}
 			}
-			if(pageChanged)
+			//if(pageChanged)
+			if((processingPage=="D" && defaultPageChanged) || (processingPage=="R" && rightPageChanged))
 			{
 				setNeedsRatingIfRateDependantOnChange(pageid);
 			}
@@ -904,8 +935,11 @@ package org.ludo.controllers
 			{
 				savedUnitIndex=0;
 				hasUnit=false;
+				processingPage="D";
 				savePageByID(currentPageID);
+				processingPage="R";
 				savePageByID(currentRightPageID);
+				processingPage="";
 				
 				if(this.pageChanged)
 				{
@@ -958,8 +992,11 @@ package org.ludo.controllers
 			{
 				savedUnitIndex=0;
 				hasUnit=false;
+				processingPage="D";
 				savePageByID(currentPageID);
+				processingPage="R";
 				savePageByID(currentRightPageID);
+				processingPage="";
 				if(this.pageChanged)//save quote to db
 				{
 					Fr.crudTransactionQueue.actionAfterAllTransactions=afterSave;
@@ -1156,7 +1193,8 @@ package org.ludo.controllers
 		    							//change the value before saved to the latest value
 		    							LudoUtils.setFieldValueBeforeSave(map.displayObject,val);
 										addToChangeDetail(String(map.displayObject["id"]),pageid,valBeforeSave==""?"A":"M","",map.description,"model",valBeforeSave,val,map.fieldmap);
-										pageChanged=true;
+										setPageChanged();
+										//pageChanged=true;
 	        						}
 	        					}
 		        			}
@@ -1224,7 +1262,8 @@ package org.ludo.controllers
 				{
 					if(coverageinput.doSaveCoverageNode())
 					{
-						pageChanged=true;
+						//pageChanged=true;
+						setPageChanged();
 						LudoUtils.modelController.quote.xmlstore.changed=true;
 					}
 				}
@@ -1269,7 +1308,8 @@ package org.ludo.controllers
 	        							LudoUtils.setFieldValueToNode(xmlmap.node,val);
 	        							//change the value before saved to the latest value
 	        							LudoUtils.setFieldValueBeforeSave(xmlmap.displayObject,val);
-	        							pageChanged=true;
+	        							//pageChanged=true;
+										setPageChanged();
 										LudoUtils.modelController.quote.xmlstore.changed=true;
 										addToChangeDetail(String(xmlmap.displayObject["id"]),pageid,"","",xmlmap.description,"xml",valBeforeSave,val,xmlmap.fieldmap);
 	        						}
@@ -1352,7 +1392,8 @@ package org.ludo.controllers
 									        		LudoUtils.setFieldValueToNode(xmlmap[1],val);
 				        							//change the value before saved to the latest value
 				        							LudoUtils.setFieldValueBeforeSave(unitMapArray.displayObject,val);
-				        							pageChanged=true;
+				        							//pageChanged=true;
+													setPageChanged();
 													LudoUtils.modelController.quote.xmlstore.changed=true;
 													addToChangeDetail(String(unitMapArray.displayObject["id"]),pageid,"",unitPanel.currentIdetifier,unitMapArray.description,"unit",valBeforeSave,val,unitPanel.unitMap+unitMapArray.fieldmap);
 					        					}				        					
@@ -1364,7 +1405,8 @@ package org.ludo.controllers
 			        		//save coverage info
 			        		if(unitPanel.doSaveAllCoverages())
 			        		{
-			        			pageChanged=true;
+								setPageChanged();
+			        			//pageChanged=true;
 								LudoUtils.modelController.quote.xmlstore.changed=true;
 			        		}
 							if(pageChanged)
@@ -1511,6 +1553,7 @@ package org.ludo.controllers
     				unitPanel.deleteUnit();
 				}
     		}
+			resetPage();
         } 
 		/***********end unid grid function*/
 		public function clearPage():void
@@ -1699,14 +1742,14 @@ package org.ludo.controllers
 				return true;
 			}
 		}
-		public function showPageMessage(message:String,type:String):void
+		public function showPageMessage(message:String,type:String,global:Boolean=false):void
 		{
 			if(dataEntryBox!=null)
 			{
-				pageMessageBox.setMessage(message,type);
-				if(this.dataEntryInnerBox!=null)
+				pageMessageBox.setMessage(message,type,global);
+				if(this.dataEntryBox!=null)
 				{
-					dataEntryInnerBox.addElementAt(pageMessageBox,1);
+					dataEntryBox.addElementAt(pageMessageBox,0);
 				}
 				//pageMsgAdded=true;
 			}
@@ -1722,7 +1765,7 @@ package org.ludo.controllers
 		}
 		public function showSuccessMsg():void
 		{
-			showPageMessage(SUCCESS_MSG,"success");
+			showPageMessage(SUCCESS_MSG,"success",true);
 		}
 		public function showPageErrorMsg(message:String):void
 		{
@@ -1730,11 +1773,11 @@ package org.ludo.controllers
 		}
 		public function hidePageErrorMsg():void
 		{
-			if(this.dataEntryInnerBox!=null)
+			if(this.dataEntryBox!=null)
 			{
-				if(dataEntryInnerBox.contains(pageMessageBox))
+				if(dataEntryBox.contains(pageMessageBox))
 				{
-					dataEntryInnerBox.removeElement(pageMessageBox);
+					dataEntryBox.removeElement(pageMessageBox);
 				}
 			}
 		}

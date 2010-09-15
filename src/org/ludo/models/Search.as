@@ -46,6 +46,7 @@ package org.ludo.models
 		override protected function onSuccess(event:Object):void
 		{
 			super.onSuccess(event);
+			showMessage=false;
 			/*
 			error=false;
 			serverError=null;

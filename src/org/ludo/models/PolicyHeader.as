@@ -1,6 +1,9 @@
 package org.ludo.models
 {
+	import mx.olap.aggregators.MinAggregator;
+	
 	import org.frest.collections.FrModelCollection;
+	import org.ludo.utils.LudoUtils;
 
 	[Resource(name="policy_headers")]
 	[Bindable]
@@ -21,6 +24,9 @@ package org.ludo.models
 		public var num_renewed:int;
 		public var num_reinstated:int;
 		public var policy_id:int;
+		[HasOne]
+		//public var xmlstore:Xmlstore=new Xmlstore();
+		public var billinginfo:BillingInfo;//=new Xmlstore();
 		[HasMany]
 		public var policy:FrModelCollection;//=new FrModelCollection();
 		
@@ -32,13 +38,54 @@ package org.ludo.models
 		public static function newPolicyHeader(policyToAdd:Policy):PolicyHeader
 		{
 			var aHeader:PolicyHeader=new PolicyHeader("newPolicyHeader");
-			if(aHeader.policy == null)
+			if(aHeader.policy==null)
 			{
 				aHeader.policy=new FrModelCollection();
+			}
+			if(aHeader.billinginfo==null)
+			{
+				aHeader.billinginfo=new BillingInfo();
 			}
 			aHeader.policy.addModel(policyToAdd);
 			aHeader.policy_prefix=policyToAdd.quote.lob;
 			aHeader.org_effective_date=policyToAdd.quote.policy_effective_date;
+			//add billing info
+			aHeader.billinginfo.payment_plan=policyToAdd.quote.payment_plan;
+			aHeader.billinginfo.total_amt_due=policyToAdd.quote.total_charge;
+			aHeader.billinginfo.current_amt_due=policyToAdd.quote.min_down;
+			aHeader.billinginfo.quoted_pemium=policyToAdd.quote.quoted_premium;
+			aHeader.billinginfo.billing_type=policyToAdd.quote.bill_type;
+			var pSchedule:XML=policyToAdd.quote.xmlstore.payment_schedule;
+			if(pSchedule!=null)
+			{
+				aHeader.billinginfo.installments_remaining=pSchedule.children().length()-1;
+				aHeader.billinginfo.payment_schedule=pSchedule;
+			}
+			var mAddress:XML=policyToAdd.quote.getMailingAddress();
+			if(mAddress!=null)
+			{
+				if(mAddress.hasOwnProperty('Addr1'))
+				{
+					aHeader.billinginfo.address1=mAddress['Addr1'].toString();
+				}
+				if(mAddress.hasOwnProperty('Addr2'))
+				{
+					aHeader.billinginfo.address2=mAddress['Addr2'].toString();
+				}
+				if(mAddress.hasOwnProperty('City'))
+				{
+					aHeader.billinginfo.city=mAddress['City'].toString();
+				}
+				if(mAddress.hasOwnProperty('StateProvCd'))
+				{
+					aHeader.billinginfo.state=mAddress['StateProvCd'].toString();
+				}
+				if(mAddress.hasOwnProperty('PostalCode'))
+				{
+					aHeader.billinginfo.zip=mAddress['PostalCode'].toString();
+				}
+			}
+			aHeader.billinginfo.changed=true;
 			aHeader.current_status="NB";
 			aHeader.current_activity="ENTERED";
 			aHeader.num_endorsed=0;

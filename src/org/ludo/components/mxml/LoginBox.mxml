@@ -32,6 +32,7 @@
 
 			private function handleCreationComplete():void
 			{
+				loginForm.addEventListener(KeyboardEvent.KEY_DOWN,checkKey);
 				if (this.parent is TitleWindow)
 				{
 					// Center the TitleWindow container 
@@ -40,7 +41,11 @@
 				}
 				LoginController.getInstance().loginbox=this;
 			}
-
+			private function checkKey(event:KeyboardEvent):void
+			{
+				if(event.charCode == 13)
+					validateAndSubmit();
+			}
 			public function reset():void
 			{
 				loginTI.text="";
@@ -67,7 +72,7 @@
 
 	<s:VGroup horizontalAlign="center"
 			 width="100%">
-		<mx:Form width="100%">
+		<mx:Form width="100%" id="loginForm" >
 			<mx:FormItem required="true"
 						 label="Username">
 				<mx:TextInput id="loginTI"/>
